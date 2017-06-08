@@ -46,7 +46,9 @@ namespace gen5_parse_compile
         {
             using (BinaryReader reader = new BinaryReader(File.Open(scr, FileMode.Open)))
             {
-                for (uint scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position;;)
+                for (uint scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position;
+                    ;
+                    scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position)
                 {
                     // The 16-bit value 0xFD13 marks the end of the header, so
                     // no more scripts exist if this is true
@@ -62,9 +64,6 @@ namespace gen5_parse_compile
 
                     // After the script's been read, jump back and read the next offset.
                     reader.BaseStream.Seek(currentOffset, SeekOrigin.Begin);
-
-                    scriptOffset = reader.ReadUInt32();
-                    currentOffset = (uint)reader.BaseStream.Position;
                 }
             }
 
@@ -75,6 +74,8 @@ namespace gen5_parse_compile
         {
             for (ushort command = reader.ReadUInt16(); true; command = reader.ReadUInt16())
             {
+                // For testing - soon this will be replaced with command's name
+                Console.WriteLine("Command found: 0x{0:X}", command);
                 // Console.Write(GetCommandName(command));
 
                 // TODO: Support arguments
