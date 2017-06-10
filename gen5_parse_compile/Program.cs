@@ -28,6 +28,8 @@ namespace gen5_parse_compile
             // Store script offsets for later
 
             // This needs to be replaced with better logic
+            // Also move it to a separate "CheckFileValidity" function or something when it gets
+            // more complicated than this.
             if (!File.Exists(scriptFile))
             {
                 Console.WriteLine("File '{0}' could not be found. Exiting...", scriptFile);
@@ -72,15 +74,16 @@ namespace gen5_parse_compile
 
         static void ReadScript (BinaryReader reader)
         {
-            for (ushort command = reader.ReadUInt16(); true; command = reader.ReadUInt16())
+            ScriptCommand current = new ScriptCommand();
+            for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
             {
                 // For testing - soon this will be replaced with command's name
-                Console.WriteLine("Command found: 0x{0:X}", command);
+                Console.WriteLine("Command found: 0x{0:X}", current.ID);
                 // Console.Write(GetCommandName(command));
 
                 // TODO: Support arguments
 
-                if (command == 0x0002)
+                if (current.ID == 0x0002)
                     break;
             }
 
