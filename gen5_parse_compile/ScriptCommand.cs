@@ -10,10 +10,16 @@ namespace gen5_parse_compile
     {
         // ID of the command, like 0x0002 or 0x017A
         ushort id;
+
         // The name that matches with that ID
         string name;
+        
         // Size of the whole command in bytes, including the command itself
+        // May be removed in favor of paramList-based calculation?
         byte size;
+
+        // Each of the command's parameters
+        List<CommandParameter> paramList;
 
         public ushort ID
         {
@@ -46,6 +52,8 @@ namespace gen5_parse_compile
             // Initialize to "nop" by default
             id = 0;
             name = GetCommandName(id);
+            paramList = new List<CommandParameter>();
+            size = 2;
         }
 
         // UNTESTED (but so simple it should work, right?)
@@ -55,7 +63,7 @@ namespace gen5_parse_compile
             return $"cmd{id:X}";
         }
 
-        // UNTESTED AS HECK, WRITE A TEST FOR THIS OR SOMETHIGN
+        // UNTESTED AS HECK, WRITE A TEST FOR THIS OR SOMETHING
         private ushort GetCommandID(string name)
         {
             ushort commandID = 0x0000;
@@ -85,6 +93,16 @@ namespace gen5_parse_compile
 
             // Otherwise, something something XML parsing...I'm gonna save that for later.
             return commandID;
+        }
+
+        private byte GetParamsSize(List<CommandParameter> theParams)
+        {
+            byte paramsSize = 0;
+            foreach (CommandParameter c in theParams)
+            {
+                paramsSize += c.GetParamSize();
+            }
+            return paramsSize;
         }
     }
 }
