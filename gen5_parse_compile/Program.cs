@@ -17,28 +17,21 @@ namespace gen5_parse_compile
                if (args.Length == 1)
                    ; // set single arg to filename, for parsing
              */
-            
-            // **************
-            // Important vars
-            // **************
 
-            // Script 180 from white 2 will be used to test.
-            // TODO: use an argument for this
-            string scriptFile = "6_180.bin";
-            // Store script offsets for later
+            // Script 180 from white 2 will be used to test. Feel free to use your own file.
+            // Not sure why you'd want to use this program, of course! Heh.
+            string scriptFile = args[0] ?? "6_180.bin";
 
-            // This needs to be replaced with better logic
-            // Also move it to a separate "CheckFileValidity" function or something when it gets
-            // more complicated than this.
-            if (!File.Exists(scriptFile))
+            if (!IsFileUsable(scriptFile))
             {
-                Console.WriteLine("File '{0}' could not be found. Exiting...", scriptFile);
+                Console.WriteLine("File '{0}' couldn't be used, see above.", scriptFile);
                 return;
             }
 
             // Let's make some magic
             ReadScriptsFromHeader(scriptFile);
 
+            Console.WriteLine("Testing has finished. Exit the program already.");
             Console.ReadLine();
 
             return;
@@ -46,17 +39,12 @@ namespace gen5_parse_compile
 
         static void ReadScriptsFromHeader(string scr)
         {
-            using (BinaryReader reader = new BinaryReader(File.Open(scr, FileMode.Open)))
+            using (BinaryReader reader = new BinaryReader(File.Open(scr, FileMode.Open, FileAccess.Read)))
             {
                 for (uint scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position;
-                    ;
+                    (ushort)scriptOffset != 0xFD13;
                     scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position)
                 {
-                    // The 16-bit value 0xFD13 marks the end of the header, so
-                    // no more scripts exist if this is true
-                    if ((ushort)scriptOffset == 0xFD13)
-                        break;
-
                     // So we found a script to jump to, then.
                     Console.WriteLine("Offset: {0:X8}", scriptOffset);
 
@@ -72,16 +60,17 @@ namespace gen5_parse_compile
             return;
         }
 
+        /// <summary>Reads a single script from the current offset of the BinaryReader.</summary>
         static void ReadScript (BinaryReader reader)
         {
             ScriptCommand current = new ScriptCommand();
             for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
             {
-                // For testing - soon this will be replaced with command's name
-                Console.WriteLine("Command found: 0x{0:X}", current.ID);
-                // Console.Write(GetCommandName(command));
+                Console.Write(current.Name + ' ');
 
                 // TODO: Support arguments
+
+                Console.Write("\n");
 
                 if (current.ID == 0x0002)
                     break;
@@ -89,6 +78,56 @@ namespace gen5_parse_compile
 
             Console.WriteLine("Script ended. Returning...");
             return;
+        }
+
+        static bool IsFileUsable(string filename)
+        {
+            if (!File.Exists(filename))
+            {
+                Console.WriteLine("File {0} does not exist. Check for typos 'n stuff.");
+                return false;
+            }
+
+            // All of this should be unnecessary if we know the file doesn't exist! Heh.
+
+            //if (string.IsNullOrWhiteSpace(filename))
+            //{
+            //    Console.WriteLine("Something's not right with the filename.");
+            //    Console.WriteLine("Make sure it doesn't have invalid characters!");
+            //    return false;
+            //}
+
+            //foreach (char c in filename)
+            //{
+            //    foreach (char d in Path.GetInvalidFileNameChars())
+            //    {
+            //        if (c == d)
+            //        {
+            //            Console.WriteLine("No. Bad filename characters. Bad.");
+            //            return false;
+            //        }
+            //    }
+            //}
+
+            //if (filename.Length >= 260)
+            //{
+            //    Console.WriteLine("That filename is too long...probably.");
+            //    Console.WriteLine("Please let me know if it isn't!");
+            //    Console.WriteLine("Come to think of it, how will you ever see this if your file can't exist...?");
+            //    return false;
+            //}
+
+            //if (filename.Length >= 248 && (filename.Contains("\\") || filename.Contains("/")))
+            //{
+            //    Console.WriteLine("That path's too long... Just like Sun and Moon's intro.");
+            //    Console.WriteLine("Seriously, why you snoopin' 'round the source code, boi? Kappa");
+            //    return false;
+            //}
+
+            // ...Why did I just write all of that again...?
+            // Whatever, the file should probably be okay to use. It's all just reading stuff now.
+
+            return true;
         }
     }
 }

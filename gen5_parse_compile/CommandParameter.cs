@@ -36,6 +36,7 @@ namespace gen5_parse_compile
                 case ParamType.dwordParam:
                     return 0x4;
                 default:
+                    Console.WriteLine("FIXME: Bad parameter size for " + Name);
                     return 0x1;
             }
         }

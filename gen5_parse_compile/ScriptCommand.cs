@@ -57,14 +57,14 @@ namespace gen5_parse_compile
         }
 
         // UNTESTED (but so simple it should work, right?)
-        private string GetCommandName(ushort id)
+        public string GetCommandName(ushort id)
         {
             // Something something XML parsing...I'm gonna save that for later.
-            return $"cmd{id:X}";
+            return $"cmd{id:x}";
         }
 
         // UNTESTED AS HECK, WRITE A TEST FOR THIS OR SOMETHING
-        private ushort GetCommandID(string name)
+        public ushort GetCommandID(string name)
         {
             ushort commandID = 0x0000;
 

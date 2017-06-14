@@ -4,4 +4,23 @@
     <id>0</id>
     <name>Nop</name>
   </command>
+  
+  <command>
+    <id>1</id>
+    <name>Nop1</name>
+  </command>
+
+  <command>
+    <id>2</id>
+    <name>End</name>
+  </command>
+
+  <command>
+    <id>3</id>
+    <name>Wait</name>
+    <arg1>
+      <type>word</type>
+      <name>framecount</name>
+    </arg1>
+  </command>
 </cmd_table>
