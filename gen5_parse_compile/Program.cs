@@ -15,7 +15,7 @@ namespace gen5_parse_compile
             /* if (args.Length == 0)
                    ; // show compiler help
                if (args.Length == 1)
-                   ; // set single arg to filename, for parsing
+                   ; // the rest of the program as it stands now
              */
 
             // Script 180 from white 2 will be used to test. Feel free to use your own file.
@@ -24,7 +24,7 @@ namespace gen5_parse_compile
 
             if (!IsFileUsable(scriptFile))
             {
-                Console.WriteLine("File '{0}' couldn't be used, see above.", scriptFile);
+                Console.WriteLine($"File '{scriptFile}' couldn't be used, see above.");
                 return;
             }
 
@@ -46,7 +46,7 @@ namespace gen5_parse_compile
                     scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position)
                 {
                     // So we found a script to jump to, then.
-                    Console.WriteLine("Offset: {0:X8}", scriptOffset);
+                    Console.WriteLine($"Offset: {scriptOffset:X8}");
 
                     // Seek forward, and read the script.
                     reader.BaseStream.Seek(scriptOffset, SeekOrigin.Current);
@@ -84,7 +84,7 @@ namespace gen5_parse_compile
         {
             if (!File.Exists(filename))
             {
-                Console.WriteLine("File {0} does not exist. Check for typos 'n stuff.");
+                Console.WriteLine($"File {filename} does not exist. Check for typos 'n stuff.");
                 return false;
             }
 
@@ -125,7 +125,7 @@ namespace gen5_parse_compile
             //}
 
             // ...Why did I just write all of that again...?
-            // Whatever, the file should probably be okay to use. It's all just reading stuff now.
+            // Whatever, the file *should* be okay to use. It's all just reading, no writing.
 
             return true;
         }

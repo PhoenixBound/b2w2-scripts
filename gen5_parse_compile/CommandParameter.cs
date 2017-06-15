@@ -44,6 +44,7 @@ namespace gen5_parse_compile
         public string Name
         {
             get => name;
+            set => name = value;
         }
     }
 }

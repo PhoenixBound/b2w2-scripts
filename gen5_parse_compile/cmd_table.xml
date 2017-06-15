@@ -23,4 +23,9 @@
       <name>framecount</name>
     </arg1>
   </command>
+
+  <command>
+    <id>2E</id>
+    <name>LockAll</name>
+  </command>
 </cmd_table>
