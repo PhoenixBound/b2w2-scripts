@@ -1,22 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <cmd_table>
-  <command>
-    <id>0</id>
+  <command id="0">
     <name>nop</name>
   </command>
   
-  <command>
-    <id>1</id>
+  <command id="1">
     <name>nop1</name>
   </command>
 
-  <command>
-    <id>2</id>
+  <command id="2">
     <name>end</name>
   </command>
 
-  <command>
-    <id>3</id>
+  <command id="3">
     <name>wait</name>
     <arg>
       <type>word</type>
@@ -24,8 +20,20 @@
     </arg>
   </command>
 
-  <command>
-    <id>2E</id>
+  <command id="2E">
     <name>lockall</name>
+  </command>
+
+  <command id="288">
+    <arg>
+      <type>word</type>
+      <name>value</name>
+    </arg>
+    <arg>
+      <type>word</type>
+    </arg>
+    <arg>
+      <type>word</type>
+    </arg>
   </command>
 </cmd_table>
