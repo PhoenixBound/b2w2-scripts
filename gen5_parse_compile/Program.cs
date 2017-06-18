@@ -20,7 +20,9 @@ namespace gen5_parse_compile
 
             // Script 180 from white 2 will be used to test. Feel free to use your own file.
             // Not sure why you'd want to use this program, of course! Heh.
-            string scriptFile = args[0] ?? "6_180.bin";
+            string scriptFile = "6_180.bin";
+            if (args.Length > 0)
+                scriptFile = args[0];
 
             if (!IsFileUsable(scriptFile))
             {
@@ -60,7 +62,6 @@ namespace gen5_parse_compile
             return;
         }
 
-        /// <summary>Reads a single script from the current offset of the BinaryReader.</summary>
         static void ReadScript (BinaryReader reader)
         {
             ScriptCommand current = new ScriptCommand();

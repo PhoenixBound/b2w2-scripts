@@ -1,0 +1,86 @@
+script: 858
+text: 174
+
+rawheader:
+  raw: 0x00000006 // one of the few places where leading zeroes are required:
+  raw: 0x0000007B // raw statements.
+  endheader
+
+// Also allowable, but not in the same file as a rawheader:
+// header:
+//   0xA // <-- absolute position of the script, not relative
+//   0x83 // <-- note that in all parts of the script, leading zeroes are optional
+//   endheader
+
+script_0A:
+  lockall
+  storeflag 0x0960
+  compareto 0x0001
+  condition 0x0001
+  if 0xFF 0x0000001A // 0x1A can be replaced with SKIPCOMMANDS(6) here.
+  playsound 0x0547
+  faceplayer
+  message2 0x00 0x04 0x0002 0x0000 0x0000
+  waitbutton
+  closemessagekeypress
+  jump 0x00000044  // 0x44 can be replaced with script_0A_2 here.
+script_0A_1:       // Jump and if commands create labels that can be used in 
+  storeflag 0x0966 // place of SKIPCOMMANDS.
+  compareto 0x0001
+  condition 0x0001
+  if 0xFF 0x0000001D // script_0A_3
+  cmd290 0x1       // Here, bufferrivalname uses a built-in generic command name.
+  playsound 0x0547
+  faceplayer
+  MESSAGE2 0x00 0x04 0x0000 0x0000 0x0000 // Names aren't case sensitive...yet
+  waitbutton
+  closemessagekeypress
+  jump 0x00000014  // script_0A_2
+script_0A_3:       // Labels are named in the order they are called
+  playsound 0x0547
+  faceplayer
+  message2 0x00 0x04 0x0001 0x0000 0x0000
+  waitbutton
+  closemessagekeypress
+script_0A_2:
+  waitmoment
+  unlockall
+  end
+  
+script_83:
+  lockall
+  storevarhero 0x00 // These command names come from pastebin.com/raw/vrkp0SN8
+  cmd290 0x1        // but can be replaced with other names easily.
+  storeflag 0x0960
+  compareto 0x0001
+  condition 0x0001
+  if 0xFF 0x0000001A // script_83_1
+  playsound 0x0547
+  faceplayer
+  message2 0x00 0x04 0x0006 0x0000 0x0000
+  waitbutton
+  closemessagekeypress
+  jump 0x00000045 // script_83_2
+script_83_1:
+  storeflag 0x0966
+  compareto 0x0001
+  condition 0x0001
+  if 0xFF 0x0000001A // script_83_3
+  playsound 0x0547
+  faceplayer
+  message2 0x00 0x04 0x0003 0x0000 0x0000
+  waitbutton
+  closemessagekeypress
+  jump 0x00000018 // script_83_2
+script_83_3:
+  playsound 0x0547
+  faceplayer
+  message3 0x00 0x04 0x0004 0x0005 0x0000 0x0002 0x0000
+  waitbutton
+  closemessagekeypress2
+script_83_2:
+  waitmoment
+  unlockall
+  end
+  
+// Padding the script file is handled by the compiler.

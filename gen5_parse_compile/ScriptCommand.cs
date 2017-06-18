@@ -68,15 +68,11 @@ namespace gen5_parse_compile
             ushort commandID = 0x0000;
 
             // First, check if it's one of the hardcoded "cmd(number)"-type names.
-            if (name.Length >= 4)
+            if (name.StartsWith("cmd"))
             {
-                bool parsingBool = false;
+                string stringID = name.TrimStart("cmd".ToCharArray());
 
-                if (name.StartsWith("cmd"))
-                {
-                    string stringID = name.TrimStart("cmd".ToCharArray());
-                    parsingBool = ushort.TryParse(stringID, out commandID);
-                }
+                bool parsingBool = ushort.TryParse(stringID, out commandID);
 
                 if (!parsingBool)
                 {
@@ -90,12 +86,13 @@ namespace gen5_parse_compile
             // Otherwise, if it isn't, try loading that command name from an XML file.
             else
             {
+                // Something something XML parsing...I'm gonna save that for later.
                 Console.WriteLine($"Unsupported command name '{name}'. Please use generic names.");
                 Console.WriteLine("TODO: Implement XML support for command names");
 
-                // Something something XML parsing...I'm gonna save that for later.
                 commandID = 0x0002;
             }
+
             return commandID;
         }
 
