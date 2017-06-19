@@ -110,6 +110,7 @@ namespace gen5_parse_compile
             return paramsSize;
         }
 
+        // Entirely untested.
         private string GetXmlCommandName(ushort id, ref bool canUseXml)
         {
             string cmdName = null;
@@ -121,42 +122,32 @@ namespace gen5_parse_compile
                 return cmdName;
             }
 
-            if (!IsCommandTableValid("cmd_table.xml"))
-            {
-                Console.WriteLine("Command table failed to validate, forcing generic names.");
-                canUseXml = false;
-                return cmdName;
-            }
-
             FileStream cmdTable = File.Open("cmd_table.xml", FileMode.Open, FileAccess.Read);
 
-            using (XmlReader cmdTableReader = XmlReader.Create(cmdTable))
+            // For XmlReader validation
+            XmlSchemaSet schemas = new XmlSchemaSet();
+            schemas.Add("", "cmd_table.xsd");
+
+            XmlReaderSettings settings = new XmlReaderSettings()
+            {
+                Schemas = schemas,
+                ValidationType = ValidationType.Schema
+            };
+            settings.ValidationEventHandler += new ValidationEventHandler((o, e) => 
+            {
+                Console.WriteLine($"XML file didn't validate: {e.Message}");
+                // So, did the program crash? An exception was just thrown, right...?
+            });
+
+            using (XmlReader cmdTableReader = XmlReader.Create(cmdTable, settings))
             {
                 cmdTableReader.MoveToContent();
                 cmdTableReader.ReadToDescendant("command");
-                
+
                 
             }
 
             return cmdName;
-        }
-
-        private bool IsCommandTableValid(string filename)
-        {
-            bool ret = true;
-
-            XmlSchemaSet schemas = new XmlSchemaSet();
-            schemas.Add("", "cmd_table.xsd");
-
-            XDocument tableDoc = XDocument.Load(filename);
-            tableDoc.Validate(schemas, (o, e) =>
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Can't use the command table, see above and the XML schema.");
-                ret = false;
-            });
-
-            return ret;
         }
     }
 }
