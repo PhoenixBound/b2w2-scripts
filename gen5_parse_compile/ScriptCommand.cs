@@ -133,12 +133,9 @@ namespace gen5_parse_compile
             using (XmlReader cmdTableReader = XmlReader.Create(cmdTable))
             {
                 cmdTableReader.MoveToContent();
-                if (!cmdTableReader.ReadToDescendant("command"))
-                {
-                    Console.WriteLine("That...isn't a good XML file, I think.");
-                    Console.WriteLine("Please add <command> elements to your XML file.");
-                    return cmdName;
-                }
+                cmdTableReader.ReadToDescendant("command");
+                
+                
             }
 
             return cmdName;
