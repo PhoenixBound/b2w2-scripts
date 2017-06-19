@@ -20,6 +20,7 @@
               <xs:simpleType>
                 <xs:restriction base="xs:string">
                   <xs:pattern value="([0-9A-Fa-f])+" />
+                  <xs:maxLength value="4" />
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
