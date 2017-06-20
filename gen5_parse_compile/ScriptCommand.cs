@@ -139,7 +139,9 @@ namespace gen5_parse_compile
                 return cmdName;
             }
 
-            FileStream cmdTable = File.Open("../../cmd_table.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            // It's fine if other programs have the XML file open. Makes testing changes easier.
+            FileStream cmdTable = new FileStream("../../cmd_table.xml", FileMode.Open,
+                FileAccess.Read, FileShare.Read);
 
             // For XmlReader validation
             // TODO: Find performance difference between this and validating once

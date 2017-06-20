@@ -16,12 +16,20 @@
     <name>wait</name>
     <arg>
       <type>word</type>
-      <name>framecount</name>
+      <name>frameCount</name>
     </arg>
   </command>
 
   <command id="2E">
     <name>lockall</name>
+  </command>
+
+  <command id="A6">
+    <name>playsound</name>
+    <arg>
+      <type>word</type>
+      <name>soundId</name>
+    </arg>
   </command>
 
   <command id="288">

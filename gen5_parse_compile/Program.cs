@@ -41,6 +41,11 @@ namespace gen5_parse_compile
 
         static void ReadScriptsFromHeader(string scr)
         {
+            // For more info about the script format of Gen V games (specifically B2W2), see
+            // Kaphotic's and pichu2001's threads on scripting, accessible from here:
+            // https://projectpokemon.org/forums/forums/topic/25852-b2w2-scripting-thread/
+            // This program will also (hopefully) serve as documentation.
+
             using (BinaryReader reader = new BinaryReader(File.Open(scr, FileMode.Open, FileAccess.Read)))
             {
                 for (uint scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position;
@@ -114,14 +119,16 @@ namespace gen5_parse_compile
             //{
             //    Console.WriteLine("That filename is too long...probably.");
             //    Console.WriteLine("Please let me know if it isn't!");
-            //    Console.WriteLine("Come to think of it, how will you ever see this if your file can't exist...?");
+            //    Console.WriteLine("Come to think of it, how will you ever see this if your file \
+            //    can't exist...?");
             //    return false;
             //}
 
             //if (filename.Length >= 248 && (filename.Contains("\\") || filename.Contains("/")))
             //{
             //    Console.WriteLine("That path's too long... Just like Sun and Moon's intro.");
-            //    Console.WriteLine("Seriously, why you snoopin' 'round the source code, boi? Kappa");
+            //    Console.WriteLine("Seriously, why you snoopin' 'round the source code, boi? \
+            //    Kappa");
             //    return false;
             //}
 
