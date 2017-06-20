@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,9 @@ namespace gen5_parse_compile
         // Each of the command's parameters
         List<CommandParameter> paramList;
 
+        // There's probably a better place for this in the main program...but it works for now.
+        bool usesXml = true;
+
         public ushort ID
         {
             get
@@ -35,6 +39,7 @@ namespace gen5_parse_compile
             {
                 id = value;
                 name = GetCommandName(id);
+                // Update paramList and size
             }
         }
 
@@ -48,6 +53,7 @@ namespace gen5_parse_compile
             {
                 name = value;
                 id = GetCommandID(name);
+                // Update paramList and size
             }
         }
 
@@ -62,11 +68,20 @@ namespace gen5_parse_compile
 
         public string GetCommandName(ushort id)
         {
-            // Something something XML parsing...I'm gonna save that for later.
-            return $"cmd{id:x}";
+            string s = null;
+
+            // Check if XML names are allowed still
+            if (usesXml)
+                s = GetXmlCommandName(id, ref usesXml);
+
+            // If s is still null (or was set to it in the the XML function), generic name is used.
+            if (s == null)
+                s = $"cmd{id:x}";
+
+            return s;
         }
 
-        // UNTESTED AS HECK, LOOK HERE FOR PROBLEMS WITH COMPILING
+        // Untested. This isn't good.
         public ushort GetCommandID(string name)
         {
             ushort commandID = 0x0000;
@@ -76,7 +91,9 @@ namespace gen5_parse_compile
             {
                 string stringID = name.TrimStart("cmd".ToCharArray());
 
-                bool parsingBool = ushort.TryParse(stringID, out commandID);
+
+                bool parsingBool = ushort.TryParse(stringID, NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture, out commandID);
 
                 if (!parsingBool)
                 {
@@ -115,36 +132,51 @@ namespace gen5_parse_compile
         {
             string cmdName = null;
 
-            if (!File.Exists("cmd_table.xml"))
+            if (!File.Exists("../../cmd_table.xml"))
             {
                 Console.WriteLine("Command table not found. Generic command names must be used.");
                 canUseXml = false;
                 return cmdName;
             }
 
-            FileStream cmdTable = File.Open("cmd_table.xml", FileMode.Open, FileAccess.Read);
+            FileStream cmdTable = File.Open("../../cmd_table.xml", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
             // For XmlReader validation
+            // TODO: Find performance difference between this and validating once
             XmlSchemaSet schemas = new XmlSchemaSet();
-            schemas.Add("", "cmd_table.xsd");
+            schemas.Add("", "../../cmd_table.xsd");
 
             XmlReaderSettings settings = new XmlReaderSettings()
             {
                 Schemas = schemas,
                 ValidationType = ValidationType.Schema
             };
-            settings.ValidationEventHandler += new ValidationEventHandler((o, e) => 
-            {
-                Console.WriteLine($"XML file didn't validate: {e.Message}");
-                // So, did the program crash? An exception was just thrown, right...?
-            });
+            // If it fails, trigger an exception for now.
 
+            // TODO: Maybe enclose this in try/catch and set canUseXml if an exception is caught?
             using (XmlReader cmdTableReader = XmlReader.Create(cmdTable, settings))
             {
                 cmdTableReader.MoveToContent();
-                cmdTableReader.ReadToDescendant("command");
+                cmdTableReader.ReadToFollowing("command");
 
-                
+                do
+                {
+                    ushort.TryParse(cmdTableReader.GetAttribute("id"), NumberStyles.HexNumber,
+                        CultureInfo.InvariantCulture, out ushort xmlID);
+
+                    if (xmlID == id)
+                    {
+                        if (cmdTableReader.ReadToDescendant("name"))
+                        {
+                            cmdName = cmdTableReader.ReadElementContentAsString();
+                            break;
+                        }
+                        // <name> doesn't exist in this case. That's perfectly fine.
+                        // It can be null, it'll just fall back to a generic name.
+                        // Using a generic name doesn't cut off access to the XML file as a whole.
+                    }
+
+                } while (cmdTableReader.ReadToNextSibling("command"));
             }
 
             return cmdName;
