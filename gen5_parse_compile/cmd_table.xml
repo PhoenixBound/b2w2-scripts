@@ -20,8 +20,64 @@
     </arg>
   </command>
 
+  <command id="1F">
+    <name>if</name>
+    <arg>
+      <type>byte</type>
+      <name>result</name>
+    </arg>
+    <arg>
+      <type>dword</type>
+      <name>offset</name>
+    </arg>
+  </command>
+
   <command id="2E">
     <name>lockall</name>
+  </command>
+
+  <command id="2F">
+    <name>unlockall</name>
+  </command>
+
+  <command id="30">
+    <name>waitmoment</name>
+  </command>
+
+  <command id="32">
+    <name>waitbutton</name>
+  </command>
+
+  <command id="3D">
+    <name>message2</name>
+    <arg>
+      <type>byte</type>
+      <name>const_1</name>
+    </arg>
+    <arg>
+      <type>byte</type>
+      <name>const_2</name>
+    </arg>
+    <arg>
+      <type>word</type>
+      <name>line</name>
+    </arg>
+    <arg>
+      <type>word</type>
+      <name>placement</name>
+    </arg>
+    <arg>
+      <type>word</type>
+      <name>style</name>
+    </arg>
+  </command>
+
+  <command id="3E">
+    <name>closemessagekeypress</name>
+  </command>
+  
+  <command id="74">
+    <name>faceplayer</name>
   </command>
 
   <command id="A6">
@@ -29,6 +85,12 @@
     <arg>
       <type>word</type>
       <name>soundId</name>
+    </arg>
+  </command>
+
+  <command id="17A">
+    <arg>
+      <type>word</type>
     </arg>
   </command>
 

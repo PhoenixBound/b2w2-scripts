@@ -8,9 +8,9 @@ rawheader:
 
 // Also allowable, but not in the same file as a rawheader:
 // header:
-//   0xA // <-- absolute position of the script, not relative
-//   0x83 // <-- note that in all parts of the script, leading zeroes are optional
-//   endheader
+//   0xA       // <-- absolute position of the script, not relative
+//   0x83      // <-- note that in all parts of the script, leading zeroes are optional
+//   endheader // These would likely be replaced with labels normally, though.
 
 script_0A:
   lockall
@@ -29,7 +29,7 @@ script_0A_1:       // Jump and if commands create labels that can be used in
   compareto 0x0001
   condition 0x0001
   if 0xFF 0x0000001D // script_0A_3
-  cmd290 0x1       // Here, bufferrivalname uses a built-in generic command name.
+  cmd290 0x1       // Here, bufferrivalname uses a built-in "generic" name.
   playsound 0x0547
   faceplayer
   MESSAGE2 0x00 0x04 0x0000 0x0000 0x0000 // Names aren't case sensitive...yet
@@ -84,3 +84,4 @@ script_83_2:
   end
   
 // Padding the script file is handled by the compiler.
+// raw: 00000000 and stuff like that can be used if you love taking up space :P

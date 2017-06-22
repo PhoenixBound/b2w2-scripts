@@ -26,8 +26,8 @@ namespace gen5_parse_compile
         // Each of the command's parameters
         List<CommandParameter> paramList;
 
-        // There's probably a better place for this in the main program...but it works for now.
-        bool usesXml = true;
+        // There's probably a better way to do this, but I don't know it.
+        Reference<bool> usesXml;
 
         public ushort ID
         {
@@ -66,13 +66,22 @@ namespace gen5_parse_compile
             size = 2;
         }
 
+        public ScriptCommand(Reference<bool> xml)
+        {
+            id = 0;
+            usesXml = xml;
+            name = GetCommandName(id);
+            paramList = new List<CommandParameter>();
+            size = 2;
+        }
+
         public string GetCommandName(ushort id)
         {
             string s = null;
 
             // Check if XML names are allowed still
-            if (usesXml)
-                s = GetXmlCommandName(id, ref usesXml);
+            if (usesXml.Val)
+                s = GetXmlCommandName(id, usesXml);
 
             // If s is still null (or was set to it in the the XML function), generic name is used.
             if (s == null)
@@ -127,21 +136,20 @@ namespace gen5_parse_compile
             return paramsSize;
         }
 
-        // Entirely untested.
-        private string GetXmlCommandName(ushort id, ref bool canUseXml)
+        private string GetXmlCommandName(ushort id, Reference<bool> canUseXml)
         {
             string cmdName = null;
 
             if (!File.Exists("../../cmd_table.xml"))
             {
                 Console.WriteLine("Command table not found. Generic command names must be used.");
-                canUseXml = false;
+                canUseXml.Val = false;
                 return cmdName;
             }
 
             // It's fine if other programs have the XML file open. Makes testing changes easier.
-            FileStream cmdTable = new FileStream("../../cmd_table.xml", FileMode.Open,
-                FileAccess.Read, FileShare.Read);
+            FileStream cmdTable = File.Open("../../cmd_table.xml", FileMode.Open, FileAccess.Read,
+                FileShare.Read);
 
             // For XmlReader validation
             // TODO: Find performance difference between this and validating once

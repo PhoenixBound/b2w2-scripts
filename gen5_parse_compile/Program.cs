@@ -46,18 +46,26 @@ namespace gen5_parse_compile
             // https://projectpokemon.org/forums/forums/topic/25852-b2w2-scripting-thread/
             // This program will also (hopefully) serve as documentation.
 
-            using (BinaryReader reader = new BinaryReader(File.Open(scr, FileMode.Open, FileAccess.Read)))
+            Reference<bool> canUseXml = new Reference<bool>()
             {
-                for (uint scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position;
+                Val = true
+            };
+
+            using (BinaryReader reader = new BinaryReader(File.Open(scr, FileMode.Open,
+                FileAccess.Read)))
+            {
+                for (uint scriptOffset = reader.ReadUInt32(),
+                        currentOffset = (uint)reader.BaseStream.Position;
                     (ushort)scriptOffset != 0xFD13;
-                    scriptOffset = reader.ReadUInt32(), currentOffset = (uint)reader.BaseStream.Position)
+                    scriptOffset = reader.ReadUInt32(),
+                        currentOffset = (uint)reader.BaseStream.Position)
                 {
                     // So we found a script to jump to, then.
                     Console.WriteLine($"Offset: {scriptOffset:X8}");
 
                     // Seek forward, and read the script.
                     reader.BaseStream.Seek(scriptOffset, SeekOrigin.Current);
-                    ReadScript(reader);
+                    ReadScript(reader, canUseXml);
 
                     // After the script's been read, jump back and read the next offset.
                     reader.BaseStream.Seek(currentOffset, SeekOrigin.Begin);
@@ -67,9 +75,9 @@ namespace gen5_parse_compile
             return;
         }
 
-        static void ReadScript (BinaryReader reader)
+        static void ReadScript (BinaryReader reader, Reference<bool> xml)
         {
-            ScriptCommand current = new ScriptCommand();
+            ScriptCommand current = new ScriptCommand(xml);
             for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
             {
                 Console.Write(current.Name + ' ');
