@@ -57,6 +57,11 @@ namespace gen5_parse_compile
             }
         }
 
+        public List<CommandParameter> ParamList
+        {
+            get => paramList;
+        }
+
         public ScriptCommand()
         {
             // Initialize to "nop" by default
@@ -190,6 +195,17 @@ namespace gen5_parse_compile
             }
 
             return cmdName;
+        }
+
+        void UpdateParams()
+        {
+            if (!usesXml.Val)
+            {
+                // We don't serve their kind here.
+                return;
+            }
+
+            // Stuff about...stuff
         }
     }
 }
