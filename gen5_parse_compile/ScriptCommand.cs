@@ -13,6 +13,8 @@ namespace gen5_parse_compile
 {
     public class ScriptCommand
     {
+        // Private variables
+
         // ID of the command, like 0x0002 or 0x017A
         ushort id;
 
@@ -28,6 +30,8 @@ namespace gen5_parse_compile
 
         // There's probably a better way to do this, but I don't know it.
         Reference<bool> usesXml;
+
+        // Properties
 
         public ushort ID
         {
@@ -62,6 +66,7 @@ namespace gen5_parse_compile
             get => paramList;
         }
 
+        // Initializers
         public ScriptCommand()
         {
             // Initialize to "nop" by default
@@ -80,93 +85,37 @@ namespace gen5_parse_compile
             size = 2;
         }
 
+        // Functions. Yay.
+
         public string GetCommandName(ushort id)
         {
             string s = null;
 
             // Check if XML names are allowed still
             if (usesXml.Val)
-                s = GetXmlCommandName(id, usesXml);
+                s = GetCommandNameFromXml(id);
 
             // If s is still null (or was set to it in the the XML function), generic name is used.
-            if (s == null)
-                s = $"cmd{id:x}";
+            s = s ?? $"cmd{id:x}";
 
             return s;
         }
 
-        // Untested. This isn't good.
-        public ushort GetCommandID(string name)
-        {
-            ushort commandID = 0x0000;
-
-            // First, check if it's one of the hardcoded "cmd(number)"-type names.
-            if (name.StartsWith("cmd"))
-            {
-                string stringID = name.TrimStart("cmd".ToCharArray());
-
-
-                bool parsingBool = ushort.TryParse(stringID, NumberStyles.HexNumber,
-                    CultureInfo.InvariantCulture, out commandID);
-
-                if (!parsingBool)
-                {
-                    Console.WriteLine($"Invalid generic command '{name}.'");
-
-                    // This will probably be used to compile scripts in the future, so it makes the
-                    // most sense to me to have the script end early.
-                    commandID = 0x0002;
-                }
-            }
-            // Otherwise, if it isn't, try loading that command name from an XML file.
-            else
-            {
-                // Something something XML parsing...I'm gonna save that for later.
-                Console.WriteLine($"Unsupported command name '{name}'. Please use generic names.");
-                Console.WriteLine("TODO: Implement XML support for command names");
-
-                commandID = 0x0002;
-            }
-
-            return commandID;
-        }
-
-        private byte GetParamsSize(List<CommandParameter> theParams)
-        {
-            byte paramsSize = 0;
-            foreach (CommandParameter c in theParams)
-            {
-                paramsSize += c.GetParamSize();
-            }
-            return paramsSize;
-        }
-
-        private string GetXmlCommandName(ushort id, Reference<bool> canUseXml)
+        private string GetCommandNameFromXml(ushort id)
         {
             string cmdName = null;
 
-            if (!File.Exists("../../cmd_table.xml"))
+            if (!File.Exists("cmd_table.xml"))
             {
                 Console.WriteLine("Command table not found. Generic command names must be used.");
-                canUseXml.Val = false;
+                usesXml.Val = false;
                 return cmdName;
             }
 
             // It's fine if other programs have the XML file open. Makes testing changes easier.
-            FileStream cmdTable = File.Open("../../cmd_table.xml", FileMode.Open, FileAccess.Read,
+            FileStream cmdTable = File.Open("cmd_table.xml", FileMode.Open, FileAccess.Read,
                 FileShare.Read);
-
-            // For XmlReader validation
-            // TODO: Find performance difference between this and validating once
-            XmlSchemaSet schemas = new XmlSchemaSet();
-            schemas.Add("", "../../cmd_table.xsd");
-
-            XmlReaderSettings settings = new XmlReaderSettings()
-            {
-                Schemas = schemas,
-                ValidationType = ValidationType.Schema
-            };
-            // If it fails, trigger an exception for now.
+            XmlReaderSettings settings = InitializeXmlSettings();
 
             // TODO: Maybe enclose this in try/catch and set canUseXml if an exception is caught?
             using (XmlReader cmdTableReader = XmlReader.Create(cmdTable, settings))
@@ -190,11 +139,107 @@ namespace gen5_parse_compile
                         // It can be null, it'll just fall back to a generic name.
                         // Using a generic name doesn't cut off access to the XML file as a whole.
                     }
-
                 } while (cmdTableReader.ReadToNextSibling("command"));
             }
 
             return cmdName;
+        }
+
+        private XmlReaderSettings InitializeXmlSettings()
+        {
+            // For XmlReader validation
+            // TODO: Find performance difference between this and validating once
+            XmlSchemaSet schemas = new XmlSchemaSet();
+            schemas.Add("", "cmd_table.xsd");
+
+            XmlReaderSettings settings = new XmlReaderSettings()
+            {
+                Schemas = schemas,
+                ValidationType = ValidationType.Schema
+            };
+
+            settings.ValidationEventHandler += new ValidationEventHandler(ValidationCallback);
+
+            return settings;
+        }
+
+        private void ValidationCallback(object sender, ValidationEventArgs args)
+        {
+            if (args.Severity == XmlSeverityType.Error)
+            {
+                Console.WriteLine("An error occurred while validating XML: " + args.Message);
+                Console.WriteLine("For now, this program will stop using the XML file.");
+                Console.WriteLine("Please fix errors in the XML file before compiling anything!");
+            }
+            else if (args.Severity == XmlSeverityType.Warning)
+            {
+                Console.WriteLine("Warning: the XSD validation could not occur.");
+                Console.WriteLine($"Specifically, '{args.Message}'");
+                Console.WriteLine("XML usage will be disabled until this is fixed.");
+            }
+            else
+            {
+                Console.WriteLine("An unknown error has occured: " + args.Message);
+                Console.WriteLine("XML usage will be disabled until this is fixed.");
+                Console.WriteLine("This message should have been unreachable...");
+            }
+            usesXml.Val = false;
+            return;
+        }
+
+        // Untested. This isn't good.
+        public ushort GetCommandID(string name)
+        {
+            ushort commandID = 0x0000;
+
+            // First, check if it's one of the hardcoded "cmd(number)"-type names.
+            // Note: this doesn't check if what comes after is actually a number!
+            if (name.StartsWith("cmd"))
+            {
+                commandID = GetCommandIDFromGenericName(name);
+            }
+            // Otherwise, if it isn't, try loading that command name from an XML file.
+            else
+            {
+                // Something something XML parsing...I'm gonna save that for later.
+                Console.WriteLine($"Unsupported command name '{name}'. Please use generic names.");
+                Console.WriteLine("TODO: Implement XML support for command names");
+
+                commandID = 0x0002;
+            }
+
+            return commandID;
+        }
+
+        // Untested. This isn't good.
+        private ushort GetCommandIDFromGenericName(string name)
+        {
+            string stringID = name.TrimStart("cmd".ToCharArray());
+
+
+            bool parsingBool = ushort.TryParse(stringID, NumberStyles.HexNumber,
+                CultureInfo.InvariantCulture, out ushort commandID);
+
+            if (!parsingBool)
+            {
+                Console.WriteLine($"Invalid generic command '{name}.'");
+
+                // This will probably be used to compile scripts in the future, so it makes the
+                // most sense to me to have the script end early.
+                commandID = 0x0002;
+            }
+
+            return commandID;
+        }
+
+        private byte GetParamsSize(List<CommandParameter> theParams)
+        {
+            byte paramsSize = 0;
+            foreach (CommandParameter c in theParams)
+            {
+                paramsSize += c.GetParamSize();
+            }
+            return paramsSize;
         }
 
         void UpdateParams()
@@ -206,6 +251,8 @@ namespace gen5_parse_compile
             }
 
             // Stuff about...stuff
+
+            return;
         }
     }
 }
