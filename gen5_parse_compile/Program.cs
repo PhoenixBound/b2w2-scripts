@@ -75,7 +75,7 @@ namespace gen5_parse_compile
             return;
         }
 
-        static void ReadScript (BinaryReader reader, Reference<bool> xml)
+        static void ReadScript(BinaryReader reader, Reference<bool> xml)
         {
             ScriptCommand current = new ScriptCommand(xml);
             for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
@@ -84,7 +84,7 @@ namespace gen5_parse_compile
 
                 // TODO: Support arguments
                 // foreach (CommandParameter c in current.paramList)
-                //     Console.Write(/* stuff */);
+                //     Console.Write(ReadParamValue(reader, c.Type));
 
                 Console.Write("\n");
 
@@ -94,6 +94,29 @@ namespace gen5_parse_compile
 
             Console.WriteLine("Script ended. Returning...");
             return;
+        }
+
+        static string ReadParamValue(BinaryReader reader, ParamType type)
+        {
+            string paramValue = "0x";
+
+            switch (type)
+            {
+                case ParamType.byteParam:
+                    paramValue += reader.ReadByte().ToString("X2");
+                    break;
+                case ParamType.wordParam:
+                    paramValue += reader.ReadUInt16().ToString("X4");
+                    break;
+                case ParamType.dwordParam:
+                    paramValue += reader.ReadUInt32().ToString("X8");
+                    break;
+                default:
+                    paramValue = "ERROR PARSING PARAMETER. CODE BUGS. YAY.";
+                    break;
+            }
+
+            return paramValue;
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace gen5_parse_compile
 {
     // Used to make it easy to tell a param's size.
-    enum ParamType
+    public enum ParamType
     {
         byteParam,
         wordParam,
@@ -45,6 +45,11 @@ namespace gen5_parse_compile
         {
             get => name;
             set => name = value;
+        }
+        public ParamType Type
+        {
+            get => type;
+            set => type = value;
         }
     }
 }
