@@ -3,7 +3,7 @@ using System.IO;
 
 namespace gen5_parse_compile
 {
-    public static class Util
+    public class Util
     {
         public static bool IsFileUsable(string filename)
         {

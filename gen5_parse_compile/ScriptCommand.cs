@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Schema;
 
 namespace gen5_parse_compile
 {
     public class ScriptCommand
     {
+        private const string cmdTableFilename = "cmd_table.xml";
+        private const string cmdTableSchema = "cmd_table.xsd";
+
         // Private variables
 
         // ID of the command, like 0x0002 or 0x017A
@@ -26,7 +25,7 @@ namespace gen5_parse_compile
         byte size;
 
         // Each of the command's parameters
-        List<CommandParameter> paramList;
+        List<ParamInfo> paramList;
 
         // There's probably a better way to do this, but I don't know it.
         Reference<bool> usesXml;
@@ -43,6 +42,7 @@ namespace gen5_parse_compile
             {
                 id = value;
                 name = GetCommandName(id);
+                UpdateParams();
                 // Update paramList and size
             }
         }
@@ -57,11 +57,12 @@ namespace gen5_parse_compile
             {
                 name = value;
                 id = GetCommandID(name);
+                UpdateParams();
                 // Update paramList and size
             }
         }
 
-        public List<CommandParameter> ParamList
+        public List<ParamInfo> ParamList
         {
             get => paramList;
         }
@@ -72,8 +73,9 @@ namespace gen5_parse_compile
             // Initialize to "nop" by default
             id = 0;
             name = GetCommandName(id);
-            paramList = new List<CommandParameter>();
+            UpdateParams();
             size = 2;
+            
         }
 
         public ScriptCommand(Reference<bool> xml)
@@ -81,7 +83,7 @@ namespace gen5_parse_compile
             id = 0;
             usesXml = xml;
             name = GetCommandName(id);
-            paramList = new List<CommandParameter>();
+            paramList = new List<ParamInfo>();
             size = 2;
         }
 
@@ -105,41 +107,30 @@ namespace gen5_parse_compile
         {
             string cmdName = null;
 
-            if (!File.Exists("cmd_table.xml"))
+            if (!File.Exists(cmdTableFilename))
             {
                 Console.WriteLine("Command table not found. Generic command names must be used.");
                 usesXml.Val = false;
                 return cmdName;
             }
 
-            // It's fine if other programs have the XML file open. Makes testing changes easier.
-            FileStream cmdTable = File.Open("cmd_table.xml", FileMode.Open, FileAccess.Read,
-                FileShare.Read);
-            XmlReaderSettings settings = InitializeXmlSettings();
-
             // TODO: Maybe enclose this in try/catch and set canUseXml if an exception is caught?
-            using (XmlReader cmdTableReader = XmlReader.Create(cmdTable, settings))
+            using (FileStream cmdTable = File.OpenRead(cmdTableFilename))
             {
-                cmdTableReader.MoveToContent();
-                cmdTableReader.ReadToFollowing("command");
-
-                do
+                using (XmlReader cmdTableReader = XmlReader.Create(cmdTable,
+                    InitializeXmlSettings()))
                 {
-                    ushort.TryParse(cmdTableReader.GetAttribute("id"), NumberStyles.HexNumber,
-                        CultureInfo.InvariantCulture, out ushort xmlID);
-
-                    if (xmlID == id)
+                    if (SeekToXmlCommandById(cmdTableReader))
                     {
                         if (cmdTableReader.ReadToDescendant("name"))
                         {
                             cmdName = cmdTableReader.ReadElementContentAsString();
-                            break;
                         }
                         // <name> doesn't exist in this case. That's perfectly fine.
                         // It can be null, it'll just fall back to a generic name.
-                        // Using a generic name doesn't cut off access to the XML file as a whole.
+                        // Using a generic name doesn't cut off access to the whole XML file.
                     }
-                } while (cmdTableReader.ReadToNextSibling("command"));
+                }
             }
 
             return cmdName;
@@ -232,17 +223,17 @@ namespace gen5_parse_compile
             return commandID;
         }
 
-        private byte GetParamsSize(List<CommandParameter> theParams)
+        private byte GetParamsSize(List<ParamInfo> theParams)
         {
             byte paramsSize = 0;
-            foreach (CommandParameter c in theParams)
+            foreach (ParamInfo c in theParams)
             {
                 paramsSize += c.GetParamSize();
             }
             return paramsSize;
         }
 
-        void UpdateParams()
+        private void UpdateParams()
         {
             if (!usesXml.Val)
             {
@@ -250,10 +241,55 @@ namespace gen5_parse_compile
                 return;
             }
 
-            // Stuff about...stuff
+            if (!File.Exists(cmdTableFilename))
+            {
+                // No need to print a message to the console for this, one should exist already
+                return;
+            }
 
+            if (paramList == null)
+            {
+                paramList = new List<ParamInfo>();
+            }
+
+            // XML time.
+            using (FileStream cmdTable = File.OpenRead(cmdTableFilename))
+            {
+                using (XmlReader cmdTableReader = XmlReader.Create(cmdTable,
+                    InitializeXmlSettings()))
+                {
+                    if (SeekToXmlCommandById(cmdTableReader))
+                    {
+                        if (cmdTableReader.ReadToDescendant("arg"))
+                        {
+                            // Stuff. This is where the magic begins.
+                        }
+                    }
+                }
+            }
 
             return;
+        }
+
+        private bool SeekToXmlCommandById(XmlReader cmdTableReader)
+        {
+            cmdTableReader.MoveToContent();
+            cmdTableReader.ReadToFollowing("command");
+
+            do
+            {
+                ushort.TryParse(cmdTableReader.GetAttribute("id"), NumberStyles.HexNumber,
+                    CultureInfo.InvariantCulture, out ushort xmlID);
+
+                if (xmlID == id)
+                {
+                    // XML command could be found!
+                    return true;
+                }
+            } while (cmdTableReader.ReadToNextSibling("command"));
+
+            // XML command could not be found.
+            return false;
         }
     }
 }

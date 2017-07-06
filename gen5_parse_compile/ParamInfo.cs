@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace gen5_parse_compile
 {
@@ -14,12 +10,15 @@ namespace gen5_parse_compile
         dwordParam
     }
 
-    public class CommandParameter
+    /// <summary>
+    /// Used to get info on one of a script command's parameters.
+    /// </summary>
+    public class ParamInfo
     {
         ParamType type;
         string name;
 
-        public CommandParameter()
+        public ParamInfo()
         {
             type = ParamType.byteParam;
             name = string.Empty;
