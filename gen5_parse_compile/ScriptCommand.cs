@@ -83,7 +83,7 @@ namespace gen5_parse_compile
             id = 0;
             usesXml = xml;
             name = GetCommandName(id);
-            paramList = new List<ParamInfo>();
+            UpdateParams();
             size = 2;
         }
 

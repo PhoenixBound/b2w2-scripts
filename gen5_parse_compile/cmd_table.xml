@@ -61,6 +61,11 @@
     <arg type="word" name="soundId" />
   </command>
 
+  <command id="E0">
+    <name>storeversion</name>
+    <arg type="word" name="variable"/>
+  </command>
+
   <command id="17A">
     <arg type="word" />
   </command>
