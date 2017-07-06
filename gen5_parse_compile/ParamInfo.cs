@@ -40,6 +40,24 @@ namespace gen5_parse_compile
             }
         }
 
+        public static ParamType ParseParamType(string s, Reference<bool> b)
+        {
+            switch (s)
+            {
+                case "byte":
+                    return ParamType.byteParam;
+                case "word":
+                    return ParamType.wordParam;
+                case "dword":
+                    return ParamType.dwordParam;
+                default:
+                    Console.WriteLine("Unimplemented param type {0}. Disabling XML.", s);
+                    Console.WriteLine("Please fix the command table!");
+                    b.Val = false;
+                    return ParamType.byteParam;
+            }
+        }
+
         public string Name
         {
             get => name;

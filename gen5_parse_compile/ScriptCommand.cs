@@ -252,6 +252,8 @@ namespace gen5_parse_compile
                 paramList = new List<ParamInfo>();
             }
 
+            paramList.Clear();
+
             // XML time.
             using (FileStream cmdTable = File.OpenRead(cmdTableFilename))
             {
@@ -263,6 +265,15 @@ namespace gen5_parse_compile
                         if (cmdTableReader.ReadToDescendant("arg"))
                         {
                             // Stuff. This is where the magic begins.
+                            do
+                            {
+                                // Get the type of the arg
+                                paramList.Add(new ParamInfo()
+                                {
+                                    Type = ParamInfo.ParseParamType(cmdTableReader
+                                        .GetAttribute("type"), usesXml)
+                                });
+                            } while (cmdTableReader.ReadToNextSibling("arg"));
                         }
                     }
                 }

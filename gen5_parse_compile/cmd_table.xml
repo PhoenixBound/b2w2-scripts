@@ -14,22 +14,13 @@
 
   <command id="3">
     <name>wait</name>
-    <arg>
-      <type>word</type>
-      <name>frameCount</name>
-    </arg>
+    <arg type="word" name="frameCount" />
   </command>
 
   <command id="1F">
     <name>if</name>
-    <arg>
-      <type>byte</type>
-      <name>result</name>
-    </arg>
-    <arg>
-      <type>dword</type>
-      <name>offset</name>
-    </arg>
+    <arg type="byte" name="result" />
+    <arg type="dword" name="offset" />
   </command>
 
   <command id="2E">
@@ -50,26 +41,11 @@
 
   <command id="3D">
     <name>message2</name>
-    <arg>
-      <type>byte</type>
-      <name>const_1</name>
-    </arg>
-    <arg>
-      <type>byte</type>
-      <name>const_2</name>
-    </arg>
-    <arg>
-      <type>word</type>
-      <name>line</name>
-    </arg>
-    <arg>
-      <type>word</type>
-      <name>placement</name>
-    </arg>
-    <arg>
-      <type>word</type>
-      <name>style</name>
-    </arg>
+    <arg type="byte" name="const_1" />
+    <arg type="byte" name="const_2" />
+    <arg type="word" name="line" />
+    <arg type="word" name="placement" />
+    <arg type="word" name="style" />
   </command>
 
   <command id="3E">
@@ -82,28 +58,16 @@
 
   <command id="A6">
     <name>playsound</name>
-    <arg>
-      <type>word</type>
-      <name>soundId</name>
-    </arg>
+    <arg type="word" name="soundId" />
   </command>
 
   <command id="17A">
-    <arg>
-      <type>word</type>
-    </arg>
+    <arg type="word" />
   </command>
 
   <command id="288">
-    <arg>
-      <type>word</type>
-      <name>value</name>
-    </arg>
-    <arg>
-      <type>word</type>
-    </arg>
-    <arg>
-      <type>word</type>
-    </arg>
+    <arg type="word" name="value" />
+    <arg type="word" />
+    <arg type="word" />
   </command>
 </cmd_table>
