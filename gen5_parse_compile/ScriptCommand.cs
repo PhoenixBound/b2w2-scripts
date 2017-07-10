@@ -93,14 +93,12 @@ namespace gen5_parse_compile
         {
             string s = null;
 
-            // Check if XML names are allowed still
+            // Use XML names...unless we aren't using XML in the first place.
             if (usesXml.Val)
                 s = GetCommandNameFromXml(id);
 
             // If s is still null (or was set to it in the the XML function), generic name is used.
-            s = s ?? $"cmd{id:x}";
-
-            return s;
+            return s ?? $"cmd{id:x}";
         }
 
         private string GetCommandNameFromXml(ushort id)
@@ -113,23 +111,19 @@ namespace gen5_parse_compile
                 usesXml.Val = false;
                 return cmdName;
             }
-
-            // TODO: Maybe enclose this in try/catch and set canUseXml if an exception is caught?
-            using (FileStream cmdTable = File.OpenRead(cmdTableFilename))
+            
+            using (XmlReader cmdTableReader = XmlReader.Create(cmdTableFilename,
+                InitializeXmlSettings()))
             {
-                using (XmlReader cmdTableReader = XmlReader.Create(cmdTable,
-                    InitializeXmlSettings()))
+                if (SeekToXmlCommandById(cmdTableReader))
                 {
-                    if (SeekToXmlCommandById(cmdTableReader))
+                    if (cmdTableReader.ReadToDescendant("name"))
                     {
-                        if (cmdTableReader.ReadToDescendant("name"))
-                        {
-                            cmdName = cmdTableReader.ReadElementContentAsString();
-                        }
-                        // <name> doesn't exist in this case. That's perfectly fine.
-                        // It can be null, it'll just fall back to a generic name.
-                        // Using a generic name doesn't cut off access to the whole XML file.
+                        cmdName = cmdTableReader.ReadElementContentAsString();
                     }
+                    // <name> doesn't exist in this case. That's perfectly fine.
+                    // It can be null, it'll just fall back to a generic name.
+                    // Using a generic name doesn't cut off access to the whole XML file.
                 }
             }
 
@@ -141,7 +135,7 @@ namespace gen5_parse_compile
             // For XmlReader validation
             // TODO: Find performance difference between this and validating once
             XmlSchemaSet schemas = new XmlSchemaSet();
-            schemas.Add("", "cmd_table.xsd");
+            schemas.Add("", cmdTableSchema);
 
             XmlReaderSettings settings = new XmlReaderSettings()
             {
@@ -255,26 +249,24 @@ namespace gen5_parse_compile
             paramList.Clear();
 
             // XML time.
-            using (FileStream cmdTable = File.OpenRead(cmdTableFilename))
+            using (XmlReader cmdTableReader = XmlReader.Create(cmdTableFilename,
+                InitializeXmlSettings()))
             {
-                using (XmlReader cmdTableReader = XmlReader.Create(cmdTable,
-                    InitializeXmlSettings()))
+                if (SeekToXmlCommandById(cmdTableReader))
                 {
-                    if (SeekToXmlCommandById(cmdTableReader))
+                    if (cmdTableReader.ReadToDescendant("arg"))
                     {
-                        if (cmdTableReader.ReadToDescendant("arg"))
+                        // Stuff. This is where the magic begins.
+                        do
                         {
-                            // Stuff. This is where the magic begins.
-                            do
+                            // Populate a new ParamInfo since we've found an "arg"
+                            paramList.Add(new ParamInfo()
                             {
-                                // Get the type of the arg
-                                paramList.Add(new ParamInfo()
-                                {
-                                    Type = ParamInfo.ParseParamType(cmdTableReader
-                                        .GetAttribute("type"), usesXml)
-                                });
-                            } while (cmdTableReader.ReadToNextSibling("arg"));
-                        }
+                                Type = ParamInfo.ParseParamType(cmdTableReader
+                                    .GetAttribute("type"), usesXml),
+                                Name = cmdTableReader.GetAttribute("name") ?? string.Empty
+                            });
+                        } while (cmdTableReader.ReadToNextSibling("arg"));
                     }
                 }
             }
