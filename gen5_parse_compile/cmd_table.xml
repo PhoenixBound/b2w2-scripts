@@ -17,6 +17,26 @@
     <arg type="word" name="frameCount" />
   </command>
 
+  <command id="8">
+    <name>compareto</name>
+    <arg type="word" name="value" />
+  </command>
+
+  <command id="10">
+    <name>storeflag</name>
+    <arg type="word" name="flag" />
+  </command>
+
+  <command id="11">
+    <name>condition</name>
+    <arg type="word" name="result" />
+  </command>
+
+  <command id="1E">
+    <name>jump</name>
+    <arg type="dword" name="offset" />
+  </command>
+
   <command id="1F">
     <name>if</name>
     <arg type="byte" name="result" />
@@ -51,6 +71,26 @@
   <command id="3E">
     <name>closemessagekeypress</name>
   </command>
+
+  <command id="3F">
+    <name>closemessagekeypress2</name>
+  </command>
+
+  <command id="48">
+    <name>message3</name>
+    <arg type="byte" name="const_1" />
+    <arg type="byte" name="const_2" />
+    <arg type="word" name="line" />
+    <arg type="word" name="npc" />
+    <arg type="word" name="placement" />
+    <arg type="word" />
+    <arg type="word" />
+  </command>
+  
+  <command id="4C">
+    <name>setvarhero</name>
+    <arg type="byte" name="buffer" />
+  </command>
   
   <command id="74">
     <name>faceplayer</name>
@@ -74,5 +114,10 @@
     <arg type="word" name="value" />
     <arg type="word" />
     <arg type="word" />
+  </command>
+
+  <command id="290">
+    <name>setvarrival</name>
+    <arg type="byte" name="buffer" />
   </command>
 </cmd_table>

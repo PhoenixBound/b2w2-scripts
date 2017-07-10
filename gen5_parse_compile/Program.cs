@@ -13,9 +13,9 @@ namespace gen5_parse_compile
                    ; // the rest of the program as it stands now
              */
 
-            // Script 180 from white 2 will be used to test. Feel free to use your own file.
+            // Script 858 from white 2 will be used to test. Feel free to use your own file.
             // Not sure why you'd want to use this program, of course! Heh.
-            string scriptFile = "6_180.bin";
+            string scriptFile = "a056_858.bin";
             if (args.Length > 0)
                 scriptFile = args[0];
 

@@ -85,3 +85,13 @@ script_83_2:
   
 // Padding the script file is handled by the compiler.
 // raw: 00000000 and stuff like that can be used if you love taking up space :P
+
+// Though it isn't part of the actual script, I'll add the text below, formatted by PPTXT:
+
+// L0: It's too bad. If you had a Pokémon\xfffewith you as well, you could compete\xf000븀\x0000\xfffewith \xf000Ā\x0001\x0001 and see who is the\xf000븀\x0000\xfffebetter Trainer!
+// L1: To be honest, I don't want\xfffemy son to go on a journey.\xf000븀\x0000\xfffeI mean, his goal is...\xf000븁\x0000\xfffeBut there is no parent who doesn't\xfffewish for his or her child to grow.
+// L2: It looks like my son found\xfffesomething important.\xf000븁\x0000\xfffeIt's all because Pokémon--\xfffeand you--were by his side!
+// L3: Someday you will both go on a\xfffejourney with your Pokémon, too!
+// L4: \xf000Ā\x0001\x0000...\xf000븁\x0000\xfffeIf \xf000Ā\x0001\x0001 loses his way\xfffeon the path, or in life really,\xf000븀\x0000\xfffeplease help him, won't you?\xf000븁\x0000\xfffeHe's the kind of person who, well,\xfffewho lets rage build inside him.
+// L5: \xf000Ā\x0001\x0000...\xf000븁\x0000\xfffeIf \xf000Ā\x0001\x0001 loses his way\xfffeon the path, or in life really,\xf000븀\x0000\xfffeplease help him, won't you?\xf000븁\x0000\xfffeHe's the kind of person who, well,\xfffewho lets rage build inside him.
+// L6: I wonder if she and Liepard will\xfffego on a journey together as well...
