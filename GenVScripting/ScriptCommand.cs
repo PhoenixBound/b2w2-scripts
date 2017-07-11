@@ -5,7 +5,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Schema;
 
-namespace gen5_parse_compile
+namespace GenVScripting
 {
     public class ScriptCommand
     {

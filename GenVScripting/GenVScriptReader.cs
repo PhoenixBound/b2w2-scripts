@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace gen5_parse_compile
+namespace GenVScripting
 {
     static class GenVScriptReader
     {

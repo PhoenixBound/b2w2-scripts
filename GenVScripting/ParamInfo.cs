@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace gen5_parse_compile
+namespace GenVScripting
 {
     // Used to make it easy to tell a param's size.
     public enum ParamType

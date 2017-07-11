@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6DF885B7-3A86-490A-AAB9-958563F313A6}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>gen5_parse_compile</RootNamespace>
-    <AssemblyName>gen5_parse_compile</AssemblyName>
+    <RootNamespace>GenVScripting</RootNamespace>
+    <AssemblyName>GenVScripting</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

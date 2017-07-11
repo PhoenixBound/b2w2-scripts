@@ -1,7 +1,7 @@
 ﻿// Gen 5 Script Parser and Compiler
 using System;
 
-namespace gen5_parse_compile
+namespace GenVScripting
 {
     class Program
     {

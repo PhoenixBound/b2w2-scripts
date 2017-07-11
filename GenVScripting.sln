@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gen5_parse_compile", "gen5_parse_compile\gen5_parse_compile.csproj", "{6DF885B7-3A86-490A-AAB9-958563F313A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenVScripting", "GenVScripting\GenVScripting.csproj", "{6DF885B7-3A86-490A-AAB9-958563F313A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
