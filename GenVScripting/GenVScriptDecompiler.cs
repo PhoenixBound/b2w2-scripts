@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GenVScripting
 {
-    static class GenVScriptReader
+    static class GenVScriptDecompiler
     {
         public static void ReadScriptsFromHeader(string scr)
         {
@@ -26,7 +26,7 @@ namespace GenVScripting
                         currentOffset = (uint)reader.BaseStream.Position)
                 {
                     // So we found a script to jump to, then.
-                    Console.WriteLine($"Offset: {scriptOffset:X8}");
+                    Console.WriteLine($"Offset: 0x{scriptOffset:X8}");
 
                     // Seek forward, and read the script.
                     reader.BaseStream.Seek(scriptOffset, SeekOrigin.Current);
@@ -42,12 +42,11 @@ namespace GenVScripting
 
         private static void ReadScript(BinaryReader reader, Reference<bool> xml)
         {
-            ScriptCommand current = new ScriptCommand(xml);
+            CommandInfo current = new CommandInfo(xml);
             for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
             {
                 Console.Write(current.Name + ' ');
 
-                // TODO: Support arguments
                 foreach (ParamInfo c in current.ParamList)
                 {
                     Console.Write(ReadParamValue(reader, c.Type));
@@ -64,21 +63,20 @@ namespace GenVScripting
             return;
         }
 
-        // Untested.
-        private static string ReadParamValue(BinaryReader reader, ParamType type)
+        private static string ReadParamValue(BinaryReader reader, NumberSize type)
         {
             string paramValue = "0x";
 
             switch (type)
             {
                 // TODO: Should a StringBuilder be used for performance?
-                case ParamType.byteParam:
+                case NumberSize.Byte:
                     paramValue += reader.ReadByte().ToString("X2");
                     break;
-                case ParamType.wordParam:
+                case NumberSize.Word:
                     paramValue += reader.ReadUInt16().ToString("X4");
                     break;
-                case ParamType.dwordParam:
+                case NumberSize.Dword:
                     paramValue += reader.ReadUInt32().ToString("X8");
                     break;
                 default:

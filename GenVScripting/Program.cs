@@ -26,7 +26,7 @@ namespace GenVScripting
             }
 
             // Let's make some magic
-            GenVScriptReader.ReadScriptsFromHeader(scriptFile);
+            GenVScriptDecompiler.ReadScriptsFromHeader(scriptFile);
 
             Console.WriteLine("Testing has finished. Exit the program already.");
             Console.ReadLine();

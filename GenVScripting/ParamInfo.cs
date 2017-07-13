@@ -1,61 +1,25 @@
 ﻿using System;
+using System.IO;
 
 namespace GenVScripting
 {
-    // Used to make it easy to tell a param's size.
-    public enum ParamType
-    {
-        byteParam,
-        wordParam,
-        dwordParam
-    }
-
     /// <summary>
-    /// Used to get info on one of a script command's parameters.
+    /// Used to expose info on one of a script command's parameters.
     /// </summary>
-    public class ParamInfo
+    public class ParamInfo : IDecompilable
     {
-        ParamType type;
+        NumberSize type;
+        // TODO: This "safe ID" is me trying to be safe since I don't know the size of the
+        // parameter beforehand. Maybe inheritance would be useful here? :/
+        uint safeId;
         string name;
+        BinaryReader reader;
 
-        public ParamInfo()
+        public ParamInfo(BinaryReader b)
         {
-            type = ParamType.byteParam;
+            type = NumberSize.Byte;
             name = string.Empty;
-        }
-
-        public byte GetParamSize()
-        {
-            switch (type)
-            {
-                case ParamType.byteParam:
-                    return 0x1;
-                case ParamType.wordParam:
-                    return 0x2;
-                case ParamType.dwordParam:
-                    return 0x4;
-                default:
-                    Console.WriteLine("FIXME: Bad parameter size for " + Name);
-                    return 0x1;
-            }
-        }
-
-        public static ParamType ParseParamType(string s, Reference<bool> b)
-        {
-            switch (s)
-            {
-                case "byte":
-                    return ParamType.byteParam;
-                case "word":
-                    return ParamType.wordParam;
-                case "dword":
-                    return ParamType.dwordParam;
-                default:
-                    Console.WriteLine("Unimplemented param type {0}. Disabling XML.", s);
-                    Console.WriteLine("Please fix the command table!");
-                    b.Val = false;
-                    return ParamType.byteParam;
-            }
+            reader = b;
         }
 
         public string Name
@@ -63,10 +27,56 @@ namespace GenVScripting
             get => name;
             set => name = value;
         }
-        public ParamType Type
+        public NumberSize Type
         {
             get => type;
             set => type = value;
+        }
+
+        public BinaryReader Reader
+        {
+            set => reader = value;
+        }
+
+        public byte GetParamSize()
+        {
+            switch (type)
+            {
+                case NumberSize.Byte:
+                    return 0x1;
+                case NumberSize.Word:
+                    return 0x2;
+                case NumberSize.Dword:
+                    return 0x4;
+                default:
+                    Console.WriteLine("FIXME: Bad parameter size for " + Name);
+                    return 0x1;
+            }
+        }
+
+        public static NumberSize ParseParamType(string s, Reference<bool> b)
+        {
+            switch (s)
+            {
+                case "byte":
+                    return NumberSize.Byte;
+                case "word":
+                    return NumberSize.Word;
+                case "dword":
+                    return NumberSize.Dword;
+                default:
+                    Console.WriteLine("Unimplemented param type {0}. Disabling XML.", s);
+                    Console.WriteLine("Please fix the command table!");
+                    b.Val = false;
+                    return NumberSize.Byte;
+            }
+        }
+
+
+        public override string ToString()
+        {
+            // TODO: Make this the value of the parameter
+            return base.ToString();
         }
     }
 }

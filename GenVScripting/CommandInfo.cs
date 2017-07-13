@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 
 namespace GenVScripting
 {
-    public class ScriptCommand
+    /// <summary>
+    /// Used to expose info about a script command.
+    /// </summary>
+    public class CommandInfo : IDecompilable
     {
         private const string cmdTableFilename = "cmd_table.xml";
         private const string cmdTableSchema = "cmd_table.xsd";
@@ -15,20 +19,20 @@ namespace GenVScripting
         // Private variables
 
         // ID of the command, like 0x0002 or 0x017A
-        ushort id;
+        private ushort id;
 
         // The name that matches with that ID
-        string name;
+        private string name;
         
         // Size of the whole command in bytes, including the command itself
         // May be removed in favor of paramList-based calculation?
-        byte size;
+        private byte size;
 
         // Each of the command's parameters
-        List<ParamInfo> paramList;
+        private List<ParamInfo> paramList;
 
         // There's probably a better way to do this, but I don't know it.
-        Reference<bool> usesXml;
+        private Reference<bool> usesXml;
 
         // Properties
 
@@ -68,7 +72,7 @@ namespace GenVScripting
         }
 
         // Initializers
-        public ScriptCommand()
+        public CommandInfo()
         {
             // Initialize to "nop" by default
             id = 0;
@@ -78,8 +82,9 @@ namespace GenVScripting
             
         }
 
-        public ScriptCommand(Reference<bool> xml)
+        public CommandInfo(Reference<bool> xml)
         {
+            // Initialize to "nop" by default
             id = 0;
             usesXml = xml;
             name = GetCommandName(id);
@@ -229,15 +234,9 @@ namespace GenVScripting
 
         private void UpdateParams()
         {
-            if (!usesXml.Val)
+            if (!usesXml.Val || !File.Exists(cmdTableFilename))
             {
                 // We don't serve their kind here.
-                return;
-            }
-
-            if (!File.Exists(cmdTableFilename))
-            {
-                // No need to print a message to the console for this, one should exist already
                 return;
             }
 
@@ -246,6 +245,8 @@ namespace GenVScripting
                 paramList = new List<ParamInfo>();
             }
 
+            // If a CommandInfo is being reused, this needs to happen!
+            // It is "update" params, not "add" params.
             paramList.Clear();
 
             // XML time.
@@ -264,6 +265,7 @@ namespace GenVScripting
                             {
                                 Type = ParamInfo.ParseParamType(cmdTableReader
                                     .GetAttribute("type"), usesXml),
+                                // TODO: Make parts around this check for null. No empty strings!
                                 Name = cmdTableReader.GetAttribute("name") ?? string.Empty
                             });
                         } while (cmdTableReader.ReadToNextSibling("arg"));
@@ -293,6 +295,19 @@ namespace GenVScripting
 
             // XML command could not be found.
             return false;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder s = new StringBuilder(name);
+
+            foreach (ParamInfo p in paramList)
+            {
+                s.Append(' ');
+                s.Append(p.ToString());
+            }
+
+            return s.ToString();
         }
     }
 }
