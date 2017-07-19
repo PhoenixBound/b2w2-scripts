@@ -72,11 +72,16 @@ namespace GenVScripting
             }
         }
 
+        public void ReadValue(NumberSize size)
+        {
+
+        }
+
 
         public override string ToString()
         {
-            // TODO: Make this the value of the parameter
-            return base.ToString();
+            // TODO: Make this better
+            return safeId.ToString("X");
         }
     }
 }

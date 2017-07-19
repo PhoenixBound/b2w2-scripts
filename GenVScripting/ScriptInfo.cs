@@ -17,6 +17,11 @@ namespace GenVScripting
 
         public string PrintScript()
         {
+            foreach (CommandInfo c in commands)
+            {
+                Util.Output(c.ToString());
+                // Add offsets in there somewhere
+            }
             return string.Empty;
         }
     }

@@ -17,22 +17,12 @@ namespace GenVScripting
         private const string cmdTableSchema = "cmd_table.xsd";
 
         // Private variables
-
-        // ID of the command, like 0x0002 or 0x017A
         private ushort id;
-
-        // The name that matches with that ID
         private string name;
-        
-        // Size of the whole command in bytes, including the command itself
-        // May be removed in favor of paramList-based calculation?
-        private byte size;
-
-        // Each of the command's parameters
         private List<ParamInfo> paramList;
-
-        // There's probably a better way to do this, but I don't know it.
+        // There's probably a better way to do global flags, but I don't know it.
         private Reference<bool> usesXml;
+        private BinaryReader reader;
 
         // Properties
 
@@ -71,25 +61,16 @@ namespace GenVScripting
             get => paramList;
         }
 
-        // Initializers
-        public CommandInfo()
-        {
-            // Initialize to "nop" by default
-            id = 0;
-            name = GetCommandName(id);
-            UpdateParams();
-            size = 2;
-            
-        }
+        public BinaryReader Reader { set => reader = value; }
 
-        public CommandInfo(Reference<bool> xml)
+        // Initializer
+        public CommandInfo(BinaryReader reader, Reference<bool> xml)
         {
             // Initialize to "nop" by default
             id = 0;
             usesXml = xml;
             name = GetCommandName(id);
             UpdateParams();
-            size = 2;
         }
 
         // Functions. Yay.
@@ -112,7 +93,7 @@ namespace GenVScripting
 
             if (!File.Exists(cmdTableFilename))
             {
-                Console.WriteLine("Command table not found. Generic command names must be used.");
+                Util.Output("Command table not found. Generic command names must be used.");
                 usesXml.Val = false;
                 return cmdName;
             }
@@ -157,21 +138,21 @@ namespace GenVScripting
         {
             if (args.Severity == XmlSeverityType.Error)
             {
-                Console.WriteLine("An error occurred while validating XML: " + args.Message);
-                Console.WriteLine("For now, this program will stop using the XML file.");
-                Console.WriteLine("Please fix errors in the XML file before compiling anything!");
+                Util.Output("An error occurred while validating XML: " + args.Message);
+                Util.Output("For now, this program will stop using the XML file.");
+                Util.Output("Please fix errors in the XML file before compiling anything!");
             }
             else if (args.Severity == XmlSeverityType.Warning)
             {
-                Console.WriteLine("Warning: the XSD validation could not occur.");
-                Console.WriteLine($"Specifically, '{args.Message}'");
-                Console.WriteLine("XML usage will be disabled until this is fixed.");
+                Util.Output("Warning: the XSD validation could not occur.");
+                Util.Output($"Specifically, '{args.Message}'");
+                Util.Output("XML usage will be disabled until this is fixed.");
             }
             else
             {
-                Console.WriteLine("An unknown error has occured: " + args.Message);
-                Console.WriteLine("XML usage will be disabled until this is fixed.");
-                Console.WriteLine("This message should have been unreachable...");
+                Util.Output("An unknown error has occured: " + args.Message);
+                Util.Output("XML usage will be disabled until this is fixed.");
+                Util.Output("This message should have been unreachable...");
             }
             usesXml.Val = false;
             return;
@@ -192,8 +173,8 @@ namespace GenVScripting
             else
             {
                 // Something something XML parsing...I'm gonna save that for later.
-                Console.WriteLine($"Unsupported command name '{name}'. Please use generic names.");
-                Console.WriteLine("TODO: Implement XML support for command names");
+                Util.Output($"Unsupported command name '{name}'. Please use generic names.");
+                Util.Output("TODO: Implement XML support for command names");
 
                 commandID = 0x0002;
             }
@@ -295,6 +276,11 @@ namespace GenVScripting
 
             // XML command could not be found.
             return false;
+        }
+
+        public void ReadValue(NumberSize size)
+        {
+            // Read a value for the ID, and set the ID property to update other vars
         }
 
         public override string ToString()

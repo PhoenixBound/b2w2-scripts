@@ -42,7 +42,7 @@ namespace GenVScripting
 
         private static void ReadScript(BinaryReader reader, Reference<bool> xml)
         {
-            CommandInfo current = new CommandInfo(xml);
+            CommandInfo current = new CommandInfo(reader, xml);
             for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
             {
                 Console.Write(current.Name + ' ');

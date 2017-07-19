@@ -56,6 +56,13 @@ namespace GenVScripting
 
             return true;
         }
+
+        public static void Output(string s)
+        {
+            // Make this a StringBuilder or something, then it can be outputted all at once
+            Console.WriteLine(s);
+            return;
+        }
     }
 
     public sealed class Reference<T>
