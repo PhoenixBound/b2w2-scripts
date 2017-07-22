@@ -73,9 +73,9 @@ namespace GenVScripting
             }
         }
 
+        // Untested.
         public void ReadValue(NumberSize size)
         {
-            throw new NotImplementedException();
             switch (size)
             {
                 case NumberSize.Byte:
@@ -93,11 +93,12 @@ namespace GenVScripting
             }
         }
 
-
+        // Untested.
         public override string ToString()
         {
-            // TODO: Make this better
-            return safeId.ToString("X");
+            // The size of the param is in bytes, and a byte is two digits. EZ.
+            // TODO: See the difference a StringBuilder makes here.
+            return "0x" + safeId.ToString($"X{GetParamSize() * 2}");
         }
     }
 }
