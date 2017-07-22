@@ -19,9 +19,11 @@ namespace GenVScripting
         {
             foreach (CommandInfo c in commands)
             {
-                Util.Output(c.ToString());
+                Console.WriteLine(c.ToString());
                 // Add offsets in there somewhere
             }
+
+            // TODO: Replace this with the script as a string...or refactor all of this.
             return string.Empty;
         }
     }

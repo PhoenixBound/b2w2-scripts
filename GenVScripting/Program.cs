@@ -21,7 +21,7 @@ namespace GenVScripting
 
             if (!Util.IsFileUsable(scriptFile))
             {
-                Console.WriteLine($"File '{scriptFile}' couldn't be used, see above.");
+                Util.Log($"File '{scriptFile}' couldn't be used, see above.");
                 return;
             }
 

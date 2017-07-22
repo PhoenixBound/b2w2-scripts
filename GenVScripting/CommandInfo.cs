@@ -20,8 +20,6 @@ namespace GenVScripting
         private ushort id;
         private string name;
         private List<ParamInfo> paramList;
-        // There's probably a better way to do global flags, but I don't know it.
-        private Reference<bool> usesXml;
         private BinaryReader reader;
 
         // Properties
@@ -63,14 +61,27 @@ namespace GenVScripting
 
         public BinaryReader Reader { set => reader = value; }
 
-        // Initializer
-        public CommandInfo(BinaryReader reader, Reference<bool> xml)
+        /// <summary>
+        /// Initializer for reading from compiled scripts.
+        /// </summary>
+        /// <param name="reader">Used for reading the command's ID and data from the script.</param>
+        public CommandInfo(BinaryReader reader)
         {
-            // Initialize to "nop" by default
-            id = 0;
-            usesXml = xml;
-            name = GetCommandName(id);
-            UpdateParams();
+            // Initialize to current command about to be read
+            this.reader = reader;
+            ReadValue(NumberSize.Word);
+            // The below aren't necessary for the current plan of ReadValue.
+            // name = GetCommandName(id);
+            // UpdateParams();
+        }
+
+        /// <summary>
+        /// Initializer for writing a compiled script. Only a skeleton right now.
+        /// </summary>
+        /// <param name="writer">Writes a compiled script.</param>
+        public CommandInfo(BinaryWriter writer)
+        {
+            throw new NotImplementedException();
         }
 
         // Functions. Yay.
@@ -80,7 +91,7 @@ namespace GenVScripting
             string s = null;
 
             // Use XML names...unless we aren't using XML in the first place.
-            if (usesXml.Val)
+            if (Util.UsesXml)
                 s = GetCommandNameFromXml(id);
 
             // If s is still null (or was set to it in the the XML function), generic name is used.
@@ -93,8 +104,8 @@ namespace GenVScripting
 
             if (!File.Exists(cmdTableFilename))
             {
-                Util.Output("Command table not found. Generic command names must be used.");
-                usesXml.Val = false;
+                Util.Log("Command table not found. Generic command names must be used.");
+                Util.UsesXml = false;
                 return cmdName;
             }
             
@@ -138,23 +149,23 @@ namespace GenVScripting
         {
             if (args.Severity == XmlSeverityType.Error)
             {
-                Util.Output("An error occurred while validating XML: " + args.Message);
-                Util.Output("For now, this program will stop using the XML file.");
-                Util.Output("Please fix errors in the XML file before compiling anything!");
+                Util.Log("An error occurred while validating XML: " + args.Message);
+                Util.Log("For now, this program will stop using the XML file.");
+                Util.Log("Please fix errors in the XML file before compiling anything!");
             }
             else if (args.Severity == XmlSeverityType.Warning)
             {
-                Util.Output("Warning: the XSD validation could not occur.");
-                Util.Output($"Specifically, '{args.Message}'");
-                Util.Output("XML usage will be disabled until this is fixed.");
+                Util.Log("Warning: the XSD validation could not occur.");
+                Util.Log($"Specifically, '{args.Message}'");
+                Util.Log("XML usage will be disabled until this is fixed.");
             }
             else
             {
-                Util.Output("An unknown error has occured: " + args.Message);
-                Util.Output("XML usage will be disabled until this is fixed.");
-                Util.Output("This message should have been unreachable...");
+                Util.Log("An unknown error has occured: " + args.Message);
+                Util.Log("XML usage will be disabled until this is fixed.");
+                Util.Log("This message should have been unreachable...");
             }
-            usesXml.Val = false;
+            Util.UsesXml = false;
             return;
         }
 
@@ -173,8 +184,8 @@ namespace GenVScripting
             else
             {
                 // Something something XML parsing...I'm gonna save that for later.
-                Util.Output($"Unsupported command name '{name}'. Please use generic names.");
-                Util.Output("TODO: Implement XML support for command names");
+                Util.Log($"Unsupported command name '{name}'. Please use generic names.");
+                Util.Log("TODO: Implement XML support for command names");
 
                 commandID = 0x0002;
             }
@@ -193,7 +204,7 @@ namespace GenVScripting
 
             if (!parsingBool)
             {
-                Console.WriteLine($"Invalid generic command '{name}.'");
+                Util.Log($"Invalid generic command '{name}.'");
 
                 // This will probably be used to compile scripts in the future, so it makes the
                 // most sense to me to have the script end early.
@@ -215,7 +226,7 @@ namespace GenVScripting
 
         private void UpdateParams()
         {
-            if (!usesXml.Val || !File.Exists(cmdTableFilename))
+            if (!Util.UsesXml || !File.Exists(cmdTableFilename))
             {
                 // We don't serve their kind here.
                 return;
@@ -242,10 +253,10 @@ namespace GenVScripting
                         do
                         {
                             // Populate a new ParamInfo since we've found an "arg"
-                            paramList.Add(new ParamInfo()
+                            paramList.Add(new ParamInfo(reader)
                             {
                                 Type = ParamInfo.ParseParamType(cmdTableReader
-                                    .GetAttribute("type"), usesXml),
+                                    .GetAttribute("type")),
                                 // TODO: Make parts around this check for null. No empty strings!
                                 Name = cmdTableReader.GetAttribute("name") ?? string.Empty
                             });
@@ -280,6 +291,7 @@ namespace GenVScripting
 
         public void ReadValue(NumberSize size)
         {
+            throw new NotImplementedException();
             // Read a value for the ID, and set the ID property to update other vars
         }
 

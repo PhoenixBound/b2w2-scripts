@@ -12,11 +12,6 @@ namespace GenVScripting
             // https://projectpokemon.org/forums/forums/topic/25852-b2w2-scripting-thread/
             // This program will also (hopefully) serve as documentation.
 
-            Reference<bool> canUseXml = new Reference<bool>()
-            {
-                Val = true
-            };
-
             using (BinaryReader reader = new BinaryReader(File.OpenRead(scr)))
             {
                 for (uint scriptOffset = reader.ReadUInt32(),
@@ -30,7 +25,7 @@ namespace GenVScripting
 
                     // Seek forward, and read the script.
                     reader.BaseStream.Seek(scriptOffset, SeekOrigin.Current);
-                    ReadScript(reader, canUseXml);
+                    ReadScript(reader);
 
                     // After the script's been read, jump back and read the next offset.
                     reader.BaseStream.Seek(currentOffset, SeekOrigin.Begin);
@@ -40,11 +35,12 @@ namespace GenVScripting
             return;
         }
 
-        private static void ReadScript(BinaryReader reader, Reference<bool> xml)
+        private static void ReadScript(BinaryReader reader)
         {
-            CommandInfo current = new CommandInfo(reader, xml);
+            CommandInfo current = new CommandInfo(reader);
             for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
             {
+                /*
                 Console.Write(current.Name + ' ');
 
                 foreach (ParamInfo c in current.ParamList)
@@ -54,12 +50,17 @@ namespace GenVScripting
                 }
 
                 Console.Write("\n");
+                */
+
+                // Eventually all of that writing will be replaced with
+                Console.WriteLine(current.ToString());
+                // or something along those lines. Possibly including a ScriptInfo to iterate thru.
 
                 if (current.ID == 0x0002)
                     break;
             }
 
-            Console.WriteLine("Script ended. Returning...");
+            Util.Log("Script ended. Returning...");
             return;
         }
 

@@ -49,12 +49,13 @@ namespace GenVScripting
                 case NumberSize.Dword:
                     return 0x4;
                 default:
-                    Console.WriteLine("FIXME: Bad parameter size for " + Name);
-                    return 0x1;
+                    Util.Log("FIXME: Bad parameter size for " + Name);
+                    throw new NotImplementedException();
+                    // return 0x1;
             }
         }
 
-        public static NumberSize ParseParamType(string s, Reference<bool> b)
+        public static NumberSize ParseParamType(string s)
         {
             switch (s)
             {
@@ -65,16 +66,31 @@ namespace GenVScripting
                 case "dword":
                     return NumberSize.Dword;
                 default:
-                    Console.WriteLine("Unimplemented param type {0}. Disabling XML.", s);
-                    Console.WriteLine("Please fix the command table!");
-                    b.Val = false;
-                    return NumberSize.Byte;
+                    Util.Log($"Unimplemented param type {s}. Disabling XML.");
+                    Util.Log("Please fix the command table!");
+                    Util.UsesXml = false;
+                    throw new NotImplementedException();
             }
         }
 
         public void ReadValue(NumberSize size)
         {
-
+            throw new NotImplementedException();
+            switch (size)
+            {
+                case NumberSize.Byte:
+                    safeId = reader.ReadByte();
+                    break;
+                case NumberSize.Word:
+                    safeId = reader.ReadUInt16();
+                    break;
+                case NumberSize.Dword:
+                    safeId = reader.ReadUInt32();
+                    break;
+                default:
+                    Util.Log($"Unknown NumberSize '{size}' sent to ReadValue.");
+                    throw new NotImplementedException();
+            }
         }
 
 

@@ -3,13 +3,17 @@ using System.IO;
 
 namespace GenVScripting
 {
-    public class Util
+    public static class Util
     {
+        // Eventually, this bool will be refactored into a settings class if that's necessary.
+        private static bool usesXml = true;
+        public static bool UsesXml { get => usesXml; set => usesXml = value; }
+
         public static bool IsFileUsable(string filename)
         {
             if (!File.Exists(filename))
             {
-                Console.WriteLine($"File {filename} does not exist. Check for typos 'n stuff.");
+                Log($"File {filename} does not exist. Check for typos 'n stuff.");
                 return false;
             }
 
@@ -57,9 +61,10 @@ namespace GenVScripting
             return true;
         }
 
-        public static void Output(string s)
+        public static void Log(string s)
         {
-            // Make this a StringBuilder or something, then it can be outputted all at once
+            // TODO: Make this write to a logfile or something.
+            // Can't rely on this being in a console window in the future.
             Console.WriteLine(s);
             return;
         }
