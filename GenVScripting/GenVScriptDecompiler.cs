@@ -14,6 +14,7 @@ namespace GenVScripting
 
             using (BinaryReader reader = new BinaryReader(File.OpenRead(scr)))
             {
+                // Sorry, all of you staring at this, horrified. Sorry.
                 for (uint scriptOffset = reader.ReadUInt32(),
                         currentOffset = (uint)reader.BaseStream.Position;
                     (ushort)scriptOffset != 0xFD13;
@@ -38,21 +39,8 @@ namespace GenVScripting
         private static void ReadScript(BinaryReader reader)
         {
             CommandInfo current = new CommandInfo(reader);
-            for (current.ID = reader.ReadUInt16(); true; current.ID = reader.ReadUInt16())
+            for (current.ReadValue(NumberSize.Word); true; current.ReadValue(NumberSize.Word))
             {
-                /*
-                Console.Write(current.Name + ' ');
-
-                foreach (ParamInfo c in current.ParamList)
-                {
-                    Console.Write(ReadParamValue(reader, c.Type));
-                    Console.Write(' ');
-                }
-
-                Console.Write("\n");
-                */
-
-                // Eventually all of that writing will be replaced with
                 Console.WriteLine(current.ToString());
                 // or something along those lines. Possibly including a ScriptInfo to iterate thru.
 

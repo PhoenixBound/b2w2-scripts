@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GenVScripting
 {
     /// <summary>
-    /// Gives a class the ability to read its values from a script.
+    /// Gives a class the ability to read its values from a compiled script.
     /// </summary>
     interface IDecompilable
     {

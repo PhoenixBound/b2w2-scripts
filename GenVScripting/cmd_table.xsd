@@ -17,6 +17,13 @@
                     </xs:simpleType>
                   </xs:attribute>
                   <xs:attribute name="name" use="optional" />
+                  <xs:attribute name="offset" use="optional">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:pattern value="script|movement" />
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

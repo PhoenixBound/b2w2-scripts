@@ -34,13 +34,13 @@
 
   <command id="1E">
     <name>jump</name>
-    <arg type="dword" name="offset" />
+    <arg type="dword" name="offset" offset="script" />
   </command>
 
   <command id="1F">
     <name>if</name>
     <arg type="byte" name="result" />
-    <arg type="dword" name="offset" />
+    <arg type="dword" name="offset" offset="script" />
   </command>
 
   <command id="2E">
