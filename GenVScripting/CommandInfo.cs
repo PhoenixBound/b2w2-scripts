@@ -260,6 +260,9 @@ namespace GenVScripting
                                 // TODO: Make parts around this check for null. No empty strings!
                                 Name = cmdTableReader.GetAttribute("name") ?? string.Empty
                             });
+
+                            // TODO: Make this less ugly
+                            paramList[paramList.Count - 1].ReadValue(paramList[paramList.Count - 1].Type);
                         } while (cmdTableReader.ReadToNextSibling("arg"));
                     }
                 }
@@ -291,8 +294,14 @@ namespace GenVScripting
 
         public void ReadValue(NumberSize size)
         {
-            throw new NotImplementedException();
-            // Read a value for the ID, and set the ID property to update other vars
+            if (size != NumberSize.Word)
+            {
+                throw new ArgumentException("A command's value must be a word.", "size");
+            }
+
+            // By setting the ID *property,* it sets the rest of the things automatically.
+            ID = reader.ReadUInt16();
+            return;
         }
 
         public override string ToString()
