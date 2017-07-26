@@ -39,7 +39,7 @@ namespace GenVScripting
             return string.Empty;
         }
 
-        public void ReadValue(NumberSize size)
+        public void ReadFromCompiled(NumberSize size)
         {
             throw new NotImplementedException();
         }

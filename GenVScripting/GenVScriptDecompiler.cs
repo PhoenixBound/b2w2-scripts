@@ -39,7 +39,7 @@ namespace GenVScripting
         private static void ReadScript(BinaryReader reader)
         {
             CommandInfo current = new CommandInfo(reader);
-            for (current.ReadValue(NumberSize.Word); true; current.ReadValue(NumberSize.Word))
+            for (current.ReadFromCompiled(NumberSize.Word); true; current.ReadFromCompiled(NumberSize.Word))
             {
                 Console.WriteLine(current.ToString());
                 // or something along those lines. Possibly including a ScriptInfo to iterate thru.
@@ -50,30 +50,6 @@ namespace GenVScripting
 
             Util.Log("Script ended. Returning...");
             return;
-        }
-
-        private static string ReadParamValue(BinaryReader reader, NumberSize type)
-        {
-            string paramValue = "0x";
-
-            switch (type)
-            {
-                // TODO: Should a StringBuilder be used for performance?
-                case NumberSize.Byte:
-                    paramValue += reader.ReadByte().ToString("X2");
-                    break;
-                case NumberSize.Word:
-                    paramValue += reader.ReadUInt16().ToString("X4");
-                    break;
-                case NumberSize.Dword:
-                    paramValue += reader.ReadUInt32().ToString("X8");
-                    break;
-                default:
-                    paramValue = "WHAT TYPE OF PARAMETER IS THAT? THIS PROGRAM'S BUGGY.";
-                    break;
-            }
-
-            return paramValue;
         }
     }
 }

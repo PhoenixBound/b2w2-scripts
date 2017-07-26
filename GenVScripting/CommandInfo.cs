@@ -24,6 +24,9 @@ namespace GenVScripting
 
         // Properties
 
+        /// <summary>
+        /// The 16-bit ID of the command.
+        /// </summary>
         public ushort ID
         {
             get
@@ -39,6 +42,9 @@ namespace GenVScripting
             }
         }
 
+        /// <summary>
+        /// The name of the command.
+        /// </summary>
         public string Name
         {
             get
@@ -54,6 +60,9 @@ namespace GenVScripting
             }
         }
 
+        /// <summary>
+        /// A list of the command's parameters.
+        /// </summary>
         public List<ParamInfo> ParamList
         {
             get => paramList;
@@ -69,7 +78,7 @@ namespace GenVScripting
         {
             // Initialize to current command about to be read
             this.reader = reader;
-            ReadValue(NumberSize.Word);
+            ReadFromCompiled(NumberSize.Word);
             // The below aren't necessary for the current plan of ReadValue.
             // name = GetCommandName(id);
             // UpdateParams();
@@ -86,6 +95,11 @@ namespace GenVScripting
 
         // Functions. Yay.
 
+        /// <summary>
+        /// Retrieves the name of a command with ID "id," with fallbacks.
+        /// </summary>
+        /// <param name="id">ID of the command.</param>
+        /// <returns>The name of the command.</returns>
         public string GetCommandName(ushort id)
         {
             string s = null;
@@ -98,6 +112,11 @@ namespace GenVScripting
             return s ?? $"cmd{id:x}";
         }
 
+        /// <summary>
+        /// Retrieves the command name from the XML command table, if applicable.
+        /// </summary>
+        /// <param name="id">ID of the command.</param>
+        /// <returns>The name of the command.</returns>
         private string GetCommandNameFromXml(ushort id)
         {
             string cmdName = null;
@@ -127,6 +146,10 @@ namespace GenVScripting
             return cmdName;
         }
 
+        /// <summary>
+        /// Initializes XML settings for reading from the command table.
+        /// </summary>
+        /// <returns>Settings for the cmdTableReader.</returns>
         private XmlReaderSettings InitializeXmlSettings()
         {
             // For XmlReader validation
@@ -145,6 +168,11 @@ namespace GenVScripting
             return settings;
         }
 
+        /// <summary>
+        /// Handles events when reading the cmdTableReader.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="args">Information about the ValidationEvent.</param>
         private void ValidationCallback(object sender, ValidationEventArgs args)
         {
             if (args.Severity == XmlSeverityType.Error)
@@ -169,7 +197,11 @@ namespace GenVScripting
             return;
         }
 
-        // Untested. This isn't good.
+        /// <summary>
+        /// [UNTESTED] Retrieves the ID of a command by name.
+        /// </summary>
+        /// <param name="name">The name of the command.</param>
+        /// <returns>The ID of the command.</returns>
         public ushort GetCommandID(string name)
         {
             ushort commandID = 0x0000;
@@ -187,13 +219,17 @@ namespace GenVScripting
                 Util.Log($"Unsupported command name '{name}'. Please use generic names.");
                 Util.Log("TODO: Implement XML support for command names");
 
-                commandID = 0x0002;
+                throw new NotImplementedException();
             }
 
             return commandID;
         }
 
-        // Untested. This isn't good.
+        /// <summary>
+        /// [UNTESTED] Determines the ID of a command using a generic name.
+        /// </summary>
+        /// <param name="name">The name of the command.</param>
+        /// <returns>The ID of the command.</returns>
         private ushort GetCommandIDFromGenericName(string name)
         {
             string stringID = name.TrimStart("cmd".ToCharArray());
@@ -214,16 +250,9 @@ namespace GenVScripting
             return commandID;
         }
 
-        private byte GetParamsSize(List<ParamInfo> theParams)
-        {
-            byte paramsSize = 0;
-            foreach (ParamInfo c in theParams)
-            {
-                paramsSize += c.GetParamSize();
-            }
-            return paramsSize;
-        }
-
+        /// <summary>
+        /// Updates the paramList based on the command's current ID.
+        /// </summary>
         private void UpdateParams()
         {
             if (!Util.UsesXml || !File.Exists(cmdTableFilename))
@@ -262,7 +291,7 @@ namespace GenVScripting
                             });
 
                             // TODO: Make this less ugly
-                            paramList[paramList.Count - 1].ReadValue(paramList[paramList.Count - 1].Type);
+                            paramList[paramList.Count - 1].ReadFromCompiled(paramList[paramList.Count - 1].Type);
                         } while (cmdTableReader.ReadToNextSibling("arg"));
                     }
                 }
@@ -271,6 +300,11 @@ namespace GenVScripting
             return;
         }
 
+        /// <summary>
+        /// Advances the cmdTableReader to the command with this command's ID.
+        /// </summary>
+        /// <param name="cmdTableReader">An XmlReader reading the command table.</param>
+        /// <returns>Whether the command could be found in the command table.</returns>
         private bool SeekToXmlCommandById(XmlReader cmdTableReader)
         {
             cmdTableReader.MoveToContent();
@@ -292,8 +326,14 @@ namespace GenVScripting
             return false;
         }
 
-        public void ReadValue(NumberSize size)
+        /// <summary>
+        /// Reads from a compiled script to find the values contained.
+        /// </summary>
+        /// <param name="size">The size of the value to read.</param>
+        public void ReadFromCompiled(NumberSize size)
         {
+            // Keeping this in just in case some weirdo tries to call this command directly.
+            // Hey, you weirdo! Don't execute this, let the library handle it!
             if (size != NumberSize.Word)
             {
                 throw new ArgumentException("A command's value must be a word.", "size");
@@ -304,6 +344,10 @@ namespace GenVScripting
             return;
         }
 
+        /// <summary>
+        /// Converts the value of this instance to a <see cref="string"/>.
+        /// </summary>
+        /// <returns>A <see cref="string"/> that represents the current object.</returns>
         public override string ToString()
         {
             StringBuilder s = new StringBuilder(name);

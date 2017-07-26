@@ -1,12 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace GenVScripting
 {
-    public static class Util
+    public class Util
     {
+        private StreamWriter writer = new StreamWriter("./decompiler.log", true, Encoding.UTF8);
         // Eventually, this bool will be refactored into a settings class if that's necessary.
         private static bool usesXml = true;
+
+
         public static bool UsesXml { get => usesXml; set => usesXml = value; }
 
         public static bool IsFileUsable(string filename)
@@ -61,17 +65,22 @@ namespace GenVScripting
             return true;
         }
 
-        public static void Log(string s)
+        /// <summary>
+        /// Logs non-script information to the console.
+        /// </summary>
+        /// <param name="message">The info to log.</param>
+        public static void Log(string message)
         {
             // TODO: Make this write to a logfile or something.
             // Can't rely on this being in a console window in the future.
-            Console.WriteLine(s);
+            Console.WriteLine(message);
             return;
         }
     }
 
-    public sealed class Reference<T>
-    {
-        public T Val { get; set; }
-    }
+    // This isn't needed in the code right now, so it's going to be commented out until it's needed
+    // public sealed class Reference<T>
+    // {
+    //     public T Val { get; set; }
+    // }
 }

@@ -13,6 +13,6 @@ namespace GenVScripting
     interface IDecompilable
     {
         BinaryReader Reader { set; }
-        void ReadValue(NumberSize size);
+        void ReadFromCompiled(NumberSize size);
     }
 }
