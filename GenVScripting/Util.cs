@@ -6,7 +6,6 @@ namespace GenVScripting
 {
     public class Util
     {
-        private StreamWriter writer = new StreamWriter("./decompiler.log", true, Encoding.UTF8);
         // Eventually, this bool will be refactored into a settings class if that's necessary.
         private static bool usesXml = true;
 
@@ -74,6 +73,7 @@ namespace GenVScripting
             // TODO: Make this write to a logfile or something.
             // Can't rely on this being in a console window in the future.
             Console.WriteLine(message);
+            // But where should the StreamWriter for a logger be initialized?
             return;
         }
     }

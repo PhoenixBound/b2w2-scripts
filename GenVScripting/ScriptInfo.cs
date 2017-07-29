@@ -10,7 +10,7 @@ namespace GenVScripting
     /// <summary>
     /// Used to expose info about one of a file's scripts.
     /// </summary>
-    class ScriptInfo : IDecompilable
+    class ScriptInfo : Decompilable
     {
         List<CommandInfo> commands;
         List<int> offsets;
@@ -18,13 +18,13 @@ namespace GenVScripting
 
         public List<CommandInfo> Commands { get => commands; set => commands = value; }
         public List<int> Offsets { get => offsets; set => offsets = value; }
-        public BinaryReader Reader { set => reader = value; }
+        public override BinaryReader Reader { set => reader = value; }
 
         public ScriptInfo(BinaryReader reader)
         {
             commands = new List<CommandInfo>();
             offsets = new List<int>();
-            this.reader = reader;
+            Reader = reader;
         }
 
         public string PrintScript()
@@ -39,8 +39,13 @@ namespace GenVScripting
             return string.Empty;
         }
 
-        public void ReadFromCompiled(NumberSize size)
+        /// <summary>
+        /// Reads from a compiled script to find the values contained.
+        /// </summary>
+        /// <param name="size">Not used for this method.</param>
+        internal override void ReadFromCompiled()
         {
+            
             throw new NotImplementedException();
         }
     }

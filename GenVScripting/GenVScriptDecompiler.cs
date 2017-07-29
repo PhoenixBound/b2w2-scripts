@@ -39,7 +39,7 @@ namespace GenVScripting
         private static void ReadScript(BinaryReader reader)
         {
             CommandInfo current = new CommandInfo(reader);
-            for (current.ReadFromCompiled(NumberSize.Word); true; current.ReadFromCompiled(NumberSize.Word))
+            for (current.ReadFromCompiled(); true; current.ReadFromCompiled())
             {
                 Console.WriteLine(current.ToString());
                 // or something along those lines. Possibly including a ScriptInfo to iterate thru.

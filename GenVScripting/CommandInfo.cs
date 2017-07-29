@@ -11,7 +11,7 @@ namespace GenVScripting
     /// <summary>
     /// Used to expose info about a script command.
     /// </summary>
-    public class CommandInfo : IDecompilable
+    public class CommandInfo : Decompilable
     {
         private const string cmdTableFilename = "cmd_table.xml";
         private const string cmdTableSchema = "cmd_table.xsd";
@@ -68,7 +68,7 @@ namespace GenVScripting
             get => paramList;
         }
 
-        public BinaryReader Reader { set => reader = value; }
+        public override BinaryReader Reader { set => reader = value; }
 
         /// <summary>
         /// Initializer for reading from compiled scripts.
@@ -78,7 +78,7 @@ namespace GenVScripting
         {
             // Initialize to current command about to be read
             this.reader = reader;
-            ReadFromCompiled(NumberSize.Word);
+            ReadFromCompiled();
             // The below aren't necessary for the current plan of ReadValue.
             // name = GetCommandName(id);
             // UpdateParams();
@@ -290,8 +290,8 @@ namespace GenVScripting
                                 Name = cmdTableReader.GetAttribute("name") ?? string.Empty
                             });
 
-                            // TODO: Make this less ugly
-                            paramList[paramList.Count - 1].ReadFromCompiled(paramList[paramList.Count - 1].Type);
+                            // TODO: Make this a bit less ugly
+                            paramList[paramList.Count - 1].ReadFromCompiled();
                         } while (cmdTableReader.ReadToNextSibling("arg"));
                     }
                 }
@@ -330,15 +330,8 @@ namespace GenVScripting
         /// Reads from a compiled script to find the values contained.
         /// </summary>
         /// <param name="size">The size of the value to read.</param>
-        public void ReadFromCompiled(NumberSize size)
+        internal override void ReadFromCompiled()
         {
-            // Keeping this in just in case some weirdo tries to call this command directly.
-            // Hey, you weirdo! Don't execute this, let the library handle it!
-            if (size != NumberSize.Word)
-            {
-                throw new ArgumentException("A command's value must be a word.", "size");
-            }
-
             // By setting the ID *property,* it sets the rest of the things automatically.
             ID = reader.ReadUInt16();
             return;

@@ -6,7 +6,7 @@ namespace GenVScripting
     /// <summary>
     /// Used to expose info on one of a script command's parameters.
     /// </summary>
-    public class ParamInfo : IDecompilable
+    public class ParamInfo : Decompilable
     {
         NumberSize type;
         // TODO: This "safe ID" is me trying to be safe since I don't know the size of the
@@ -47,10 +47,7 @@ namespace GenVScripting
         /// <summary>
         /// Sets the BinaryReader from which to read a param's value.
         /// </summary>
-        public BinaryReader Reader
-        {
-            set => reader = value;
-        }
+        public override BinaryReader Reader { set => reader = value; }
 
         /// <summary>
         /// Gets the size in bytes of a parameter.
@@ -68,7 +65,7 @@ namespace GenVScripting
                     return 0x4;
                 default:
                     Util.Log("FIXME: Bad parameter size for " + Name);
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
                     // return 0x1;
             }
         }
@@ -101,9 +98,9 @@ namespace GenVScripting
         /// Reads from a compiled script to find the values contained.
         /// </summary>
         /// <param name="size">The size of the value to read.</param>
-        public void ReadFromCompiled(NumberSize size)
+        internal override void ReadFromCompiled()
         {
-            switch (size)
+            switch (type)
             {
                 case NumberSize.Byte:
                     safeId = reader.ReadByte();
@@ -116,7 +113,7 @@ namespace GenVScripting
                     break;
                 default:
                     // This should only be used by code, so an exception is fine.
-                    throw new ArgumentException($"Unknown NumberSize '{size}' sent to ReadFromCompiled.");
+                    throw new ArgumentException($"Unknown NumberSize '{type}' sent to ReadFromCompiled.");
             }
         }
 
