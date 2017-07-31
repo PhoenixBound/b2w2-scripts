@@ -6,7 +6,7 @@ namespace GenVScripting
     /// <summary>
     /// Used to expose info on one of a script command's parameters.
     /// </summary>
-    public class ParamInfo : Decompilable
+    public class ParamInfo : IDecompilable
     {
         NumberSize type;
         // TODO: This "safe ID" is me trying to be safe since I don't know the size of the
@@ -47,7 +47,7 @@ namespace GenVScripting
         /// <summary>
         /// Sets the BinaryReader from which to read a param's value.
         /// </summary>
-        public override BinaryReader Reader { set => reader = value; }
+        public BinaryReader Reader { set => reader = value; }
 
         /// <summary>
         /// Gets the size in bytes of a parameter.
@@ -98,7 +98,7 @@ namespace GenVScripting
         /// Reads from a compiled script to find the values contained.
         /// </summary>
         /// <param name="size">The size of the value to read.</param>
-        internal override void ReadFromCompiled()
+        public void Decompile()
         {
             switch (type)
             {

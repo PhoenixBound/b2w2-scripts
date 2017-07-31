@@ -10,9 +10,9 @@ namespace GenVScripting
     /// <summary>
     /// Gives a class the ability to read its values from a compiled script.
     /// </summary>
-    public abstract class Decompilable
+    public interface IDecompilable
     {
-        public abstract BinaryReader Reader { set; }
-        internal abstract void ReadFromCompiled();
+        BinaryReader Reader { set; }
+        void Decompile();
     }
 }

@@ -11,7 +11,7 @@ namespace GenVScripting
     /// <summary>
     /// Used to expose info about a script command.
     /// </summary>
-    public class CommandInfo : Decompilable
+    public class CommandInfo : IDecompilable
     {
         private const string cmdTableFilename = "cmd_table.xml";
         private const string cmdTableSchema = "cmd_table.xsd";
@@ -68,7 +68,7 @@ namespace GenVScripting
             get => paramList;
         }
 
-        public override BinaryReader Reader { set => reader = value; }
+        public BinaryReader Reader { set => reader = value; }
 
         /// <summary>
         /// Initializer for reading from compiled scripts.
@@ -78,7 +78,7 @@ namespace GenVScripting
         {
             // Initialize to current command about to be read
             this.reader = reader;
-            ReadFromCompiled();
+            Decompile();
             // The below aren't necessary for the current plan of ReadValue.
             // name = GetCommandName(id);
             // UpdateParams();
@@ -291,7 +291,7 @@ namespace GenVScripting
                             });
 
                             // TODO: Make this a bit less ugly
-                            paramList[paramList.Count - 1].ReadFromCompiled();
+                            paramList[paramList.Count - 1].Decompile();
                         } while (cmdTableReader.ReadToNextSibling("arg"));
                     }
                 }
@@ -330,7 +330,7 @@ namespace GenVScripting
         /// Reads from a compiled script to find the values contained.
         /// </summary>
         /// <param name="size">The size of the value to read.</param>
-        internal override void ReadFromCompiled()
+        public void Decompile()
         {
             // By setting the ID *property,* it sets the rest of the things automatically.
             ID = reader.ReadUInt16();
