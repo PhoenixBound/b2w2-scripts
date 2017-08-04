@@ -6,7 +6,7 @@
     public enum NumberSize
     {
         Byte,
-        Word,
-        Dword
+        Short,
+        Int
     }
 }

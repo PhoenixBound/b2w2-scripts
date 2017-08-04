@@ -59,9 +59,9 @@ namespace GenVScripting
             {
                 case NumberSize.Byte:
                     return 0x1;
-                case NumberSize.Word:
+                case NumberSize.Short:
                     return 0x2;
-                case NumberSize.Dword:
+                case NumberSize.Int:
                     return 0x4;
                 default:
                     Util.Log("FIXME: Bad parameter size for " + Name);
@@ -81,15 +81,15 @@ namespace GenVScripting
             {
                 case "byte":
                     return NumberSize.Byte;
-                case "word":
-                    return NumberSize.Word;
-                case "dword":
-                    return NumberSize.Dword;
+                case "short":
+                    return NumberSize.Short;
+                case "int":
+                    return NumberSize.Int;
                 default:
                     Util.Log($"Unimplemented param type {s}. Disabling XML.");
                     Util.Log("Please fix the command table!");
                     Util.UsesXml = false;
-                    return NumberSize.Word;
+                    return NumberSize.Short;
                     // TODO: replace this^^ with an exception and a handler.
             }
         }
@@ -105,10 +105,10 @@ namespace GenVScripting
                 case NumberSize.Byte:
                     safeId = reader.ReadByte();
                     break;
-                case NumberSize.Word:
+                case NumberSize.Short:
                     safeId = reader.ReadUInt16();
                     break;
-                case NumberSize.Dword:
+                case NumberSize.Int:
                     safeId = reader.ReadUInt32();
                     break;
                 default:

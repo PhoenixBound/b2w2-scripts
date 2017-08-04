@@ -133,11 +133,8 @@ namespace GenVScripting
             {
                 if (SeekToXmlCommandById(cmdTableReader))
                 {
-                    if (cmdTableReader.ReadToDescendant("name"))
-                    {
-                        cmdName = cmdTableReader.ReadElementContentAsString();
-                    }
-                    // <name> doesn't exist in this case. That's perfectly fine.
+                    cmdName = cmdTableReader.GetAttribute("name");
+                    // The name attribute doesn't exist in this case. That's perfectly fine.
                     // It can be null, it'll just fall back to a generic name.
                     // Using a generic name doesn't cut off access to the whole XML file.
                 }

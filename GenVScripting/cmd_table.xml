@@ -1,123 +1,91 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <cmd_table>
-  <command id="0">
-    <name>nop</name>
-  </command>
+  <command id="0" name="nop" />
   
-  <command id="1">
-    <name>nop1</name>
+  <command id="1" name="nop1" />
+
+  <command id="2" name="end" />
+
+  <command id="3" name="wait">
+    <arg type="short" name="frameCount" />
   </command>
 
-  <command id="2">
-    <name>end</name>
+  <command id="8" name="compareto">
+    <arg type="short" name="value" />
   </command>
 
-  <command id="3">
-    <name>wait</name>
-    <arg type="word" name="frameCount" />
+  <command id="10" name="storeflag">
+    <arg type="short" name="flag" />
   </command>
 
-  <command id="8">
-    <name>compareto</name>
-    <arg type="word" name="value" />
+  <command id="11" name="condition">
+    <arg type="short" name="result" />
   </command>
 
-  <command id="10">
-    <name>storeflag</name>
-    <arg type="word" name="flag" />
+  <command id="1E" name="jump">
+    <arg type="int" name="offset" offset="script" />
   </command>
 
-  <command id="11">
-    <name>condition</name>
-    <arg type="word" name="result" />
-  </command>
-
-  <command id="1E">
-    <name>jump</name>
-    <arg type="dword" name="offset" offset="script" />
-  </command>
-
-  <command id="1F">
-    <name>if</name>
+  <command id="1F" name="if">
     <arg type="byte" name="result" />
-    <arg type="dword" name="offset" offset="script" />
+    <arg type="int" name="offset" offset="script" />
   </command>
 
-  <command id="2E">
-    <name>lockall</name>
-  </command>
+  <command id="2E" name="lockall" />
 
-  <command id="2F">
-    <name>unlockall</name>
-  </command>
+  <command id="2F" name="unlockall" />
 
-  <command id="30">
-    <name>waitmoment</name>
-  </command>
+  <command id="30" name="waitmoment" />
 
-  <command id="32">
-    <name>waitbutton</name>
-  </command>
+  <command id="32" name="waitbutton" />
 
-  <command id="3D">
-    <name>message2</name>
+  <command id="3D" name="message2">
     <arg type="byte" name="const_1" />
     <arg type="byte" name="const_2" />
-    <arg type="word" name="line" />
-    <arg type="word" name="placement" />
-    <arg type="word" name="style" />
+    <arg type="short" name="line" />
+    <arg type="short" name="placement" />
+    <arg type="short" name="style" />
   </command>
 
-  <command id="3E">
-    <name>closemessagekeypress</name>
-  </command>
+  <command id="3E" name="closemessagekeypress" />
 
-  <command id="3F">
-    <name>closemessagekeypress2</name>
-  </command>
+  <command id="3F" name="closemessagekeypress2" />
 
-  <command id="48">
-    <name>message3</name>
+  <command id="48" name="message3">
     <arg type="byte" name="const_1" />
     <arg type="byte" name="const_2" />
-    <arg type="word" name="line" />
-    <arg type="word" name="npc" />
-    <arg type="word" name="placement" />
-    <arg type="word" />
-    <arg type="word" />
+    <arg type="short" name="line" />
+    <arg type="short" name="npc" />
+    <arg type="short" name="placement" />
+    <arg type="short" />
+    <arg type="short" />
   </command>
   
-  <command id="4C">
-    <name>setvarhero</name>
+  <command id="4C" name="setvarhero">
     <arg type="byte" name="buffer" />
   </command>
   
-  <command id="74">
-    <name>faceplayer</name>
+  <command id="74" name="faceplayer" />
+
+  <command id="A6" name="playsound">
+    <arg type="short" name="soundId" />
   </command>
 
-  <command id="A6">
-    <name>playsound</name>
-    <arg type="word" name="soundId" />
-  </command>
-
-  <command id="E0">
-    <name>storeversion</name>
-    <arg type="word" name="variable"/>
+  <command id="E0" name="storeversion">
+    <arg type="short" name="variable"/>
   </command>
 
   <command id="17A">
-    <arg type="word" />
+    <arg type="short" />
   </command>
 
   <command id="288">
-    <arg type="word" name="value" />
-    <arg type="word" />
-    <arg type="word" />
+    <arg type="short" name="value" />
+    <arg type="short" />
+    <arg type="short" />
   </command>
 
-  <command id="290">
-    <name>setvarrival</name>
+  <command id="290" name="setvarrival">
     <arg type="byte" name="buffer" />
   </command>
 </cmd_table>

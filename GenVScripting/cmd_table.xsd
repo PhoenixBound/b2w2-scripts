@@ -6,13 +6,12 @@
         <xs:element maxOccurs="unbounded" name="command">
           <xs:complexType>
             <xs:sequence>
-              <xs:element minOccurs="0" name="name" type="xs:string" />
               <xs:element minOccurs="0" maxOccurs="unbounded" name="arg">
                 <xs:complexType>
                   <xs:attribute name="type" use="required">
                     <xs:simpleType>
                       <xs:restriction base ="xs:string">
-                        <xs:pattern value="byte|word|dword" />
+                        <xs:pattern value="byte|short|int" />
                       </xs:restriction>
                     </xs:simpleType>
                   </xs:attribute>
@@ -35,6 +34,7 @@
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="name" use="optional" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

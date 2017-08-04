@@ -16,6 +16,9 @@ namespace GenVScripting
     // served, but they're added to the decompiled script in their actual file order (i.e. going
     // from smallest offset to largest offset). They're similar enough to normal offsets that they
     // don't get any special abstraction offsets don't.
+    //
+    // How offsets will be integrated into a list of commands has yet to be determined. Script off-
+    // sets should be flexible enough to not duplicate data due to running into another offset.
 
     /// <summary>
     /// Used to expose info about all the scripts in a file.
@@ -37,18 +40,6 @@ namespace GenVScripting
             Reader = reader;
         }
 
-        public string PrintScript()
-        {
-            foreach (CommandInfo c in commands)
-            {
-                Console.WriteLine(c.ToString());
-                // Add offsets in there somewhere
-            }
-
-            // TODO: Replace this with the script as a string...or refactor all of this.
-            return string.Empty;
-        }
-
         /// <summary>
         /// Reads from a compiled script to find the values contained.
         /// </summary>
@@ -58,5 +49,11 @@ namespace GenVScripting
             
             throw new NotImplementedException();
         }
+
+        //public void AddOffset(int offset)
+        //{
+        //    offsets.Add(offset);
+        //    GenVScriptDecompiler.ReadScript(reader);
+        //}
     }
 }
