@@ -239,9 +239,7 @@ namespace GenVScripting
             {
                 Util.Log($"Invalid generic command '{name}.'");
 
-                // This will probably be used to compile scripts in the future, so it makes the
-                // most sense to me to have the script end early.
-                commandID = 0x0002;
+                throw new NotSupportedException();
             }
 
             return commandID;
@@ -252,12 +250,6 @@ namespace GenVScripting
         /// </summary>
         private void UpdateParams()
         {
-            if (!Util.UsesXml || !File.Exists(cmdTableFilename))
-            {
-                // We don't serve their kind here.
-                return;
-            }
-
             if (paramList == null)
             {
                 paramList = new List<ParamInfo>();
@@ -267,6 +259,12 @@ namespace GenVScripting
             // It is "update" params, not "add" params.
             paramList.Clear();
 
+            if (!Util.UsesXml || !File.Exists(cmdTableFilename))
+            {
+                // We don't serve their kind here.
+                return;
+            }
+          
             // XML time.
             using (XmlReader cmdTableReader = XmlReader.Create(cmdTableFilename,
                 InitializeXmlSettings()))
@@ -275,7 +273,7 @@ namespace GenVScripting
                 {
                     if (cmdTableReader.ReadToDescendant("arg"))
                     {
-                        // Stuff. This is where the magic begins.
+                        // We've found an arg or 5. Let the magic begin.
                         do
                         {
                             // Populate a new ParamInfo since we've found an "arg"
@@ -283,13 +281,14 @@ namespace GenVScripting
                             {
                                 Type = ParamInfo.ParseParamType(cmdTableReader
                                     .GetAttribute("type")),
-                                // TODO: Make parts around this check for null. No empty strings!
-                                Name = cmdTableReader.GetAttribute("name") ?? string.Empty
+                                // TODO: Make sure stuff's okay if the name is null
+                                Name = cmdTableReader.GetAttribute("name")
                             });
 
                             // TODO: Make this a bit less ugly
                             paramList[paramList.Count - 1].Decompile();
-                        } while (cmdTableReader.ReadToNextSibling("arg"));
+                        }
+                        while (cmdTableReader.ReadToNextSibling("arg"));
                     }
                 }
             }
@@ -326,7 +325,6 @@ namespace GenVScripting
         /// <summary>
         /// Reads from a compiled script to find the values contained.
         /// </summary>
-        /// <param name="size">The size of the value to read.</param>
         public void Decompile()
         {
             // By setting the ID *property,* it sets the rest of the things automatically.

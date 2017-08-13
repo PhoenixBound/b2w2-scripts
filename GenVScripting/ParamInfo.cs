@@ -97,7 +97,6 @@ namespace GenVScripting
         /// <summary>
         /// Reads from a compiled script to find the values contained.
         /// </summary>
-        /// <param name="size">The size of the value to read.</param>
         public void Decompile()
         {
             switch (type)

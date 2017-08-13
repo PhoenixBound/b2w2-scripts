@@ -21,9 +21,9 @@ namespace GenVScripting
     // sets should be flexible enough to not duplicate data due to running into another offset.
 
     /// <summary>
-    /// Used to expose info about all the scripts in a file.
+    /// Used to expose info about all the script data in a file.
     /// </summary>
-    class ScriptFileInfo : IDecompilable
+    public class ScriptFileInfo : IDecompilable
     {
         List<CommandInfo> commands;
         List<int> offsets;
@@ -43,7 +43,6 @@ namespace GenVScripting
         /// <summary>
         /// Reads from a compiled script to find the values contained.
         /// </summary>
-        /// <param name="size">Not used for this method.</param>
         public void Decompile()
         {
             
